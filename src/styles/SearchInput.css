@@ -1,0 +1,21 @@
+._search-input {
+  position: relative;
+  max-width: 500px;
+  width: 60%;
+  margin: 0 auto;
+}
+
+._search-input i {
+  position: absolute;
+  top: 1.4rem;
+  left: 1rem;
+}
+
+._search-input input {
+  padding-left: 4rem;
+  width: 100%;
+}
+
+._search-input input:focus, ._search-input input:active {
+   outline: 0 none;
+}
