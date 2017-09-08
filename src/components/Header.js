@@ -13,15 +13,11 @@ class Header extends Component {
           <div className='ml1'>|</div>
           <Link to='/mios' className='ml1 no-underline black'>Mis Chunches</Link>
           <div className='ml1'>|</div>
-          <Link to='/regalar' className='ml1 no-underline black'>Regalar</Link>
-          <div className='ml1'>|</div>
-          <Link to='/prestar' className='ml1 no-underline black'>Prestar</Link>
-          <div className='ml1'>|</div>
-          <Link to='/mios' className='ml1 no-underline black'>Mi Red</Link>
+          <Link to='/mi-red' className='ml1 no-underline black'>Mi Red</Link>
         </div>
         <div className='flex flex-fixed'>
           <Link to='/perfil' className='ml1 no-underline black'>Mi Perfil</Link>
-          <Link to='/prestar' className='ml1 no-underline black'>Mensajes</Link>
+          <Link to='/mensajes' className='ml1 no-underline black'>Mensajes</Link>
         </div>
       </div>
     )
