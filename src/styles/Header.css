@@ -1,0 +1,20 @@
+._header > div {
+  display: inline-flex;
+}
+
+._header .tabs a {
+  line-height: 26px;
+}
+
+._header .tabs a.selected {
+  background-color: white;
+  color: #505050;
+}
+
+._header .icon-link {
+  height: 26px;
+}
+
+._header .material-icons {
+  font-size: 26px;
+}

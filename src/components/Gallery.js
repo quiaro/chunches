@@ -164,7 +164,7 @@ class Gallery extends Component {
 
             <b className="db mt2 f6 lh-copy">{item.title}</b>
           </a>
-          <button className='f6 link dim ba ph3 pv2 mb2 db white bg-dark-blue'>Me sirve</button>
+          <button className='f6 link dim ba ph3 pv2 mb2 mt2 db white bg-dark-blue'>Me sirve</button>
         </div>
       );
     });

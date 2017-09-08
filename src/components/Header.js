@@ -1,28 +1,47 @@
-import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
-import { withRouter } from 'react-router'
+import React, { Component } from 'react';
+import { NavLink, Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
+
+import '../styles/Header.css';
 
 class Header extends Component {
-
   render() {
-
     return (
-      <div className='flex bb pa3 justify-between nowrap'>
-        <div className='flex flex-fixed'>
-          <Link to='/de-otros' className='no-underline black'>Chunches de Otros</Link>
-          <div className='ml1'>|</div>
-          <Link to='/mios' className='ml1 no-underline black'>Mis Chunches</Link>
-          <div className='ml1'>|</div>
-          <Link to='/mi-red' className='ml1 no-underline black'>Mi Red</Link>
+      <div className="_header flex justify-between nowrap bg-dark-blue">
+        <div className="tabs">
+          <NavLink
+            to="/de-otros"
+            activeClassName="selected"
+            className="pl4 pv3 pr3 no-underline black white"
+          >
+            Chunches de Otros
+          </NavLink>
+          <NavLink
+            to="/mios"
+            activeClassName="selected"
+            className="pa3 no-underline black white"
+          >
+            Mis Chunches
+          </NavLink>
+          <NavLink
+            to="/mi-red"
+            activeClassName="selected"
+            className="pa3 no-underline black white"
+          >
+            Mi Red
+          </NavLink>
         </div>
-        <div className='flex flex-fixed'>
-          <Link to='/perfil' className='ml1 no-underline black'>Mi Perfil</Link>
-          <Link to='/mensajes' className='ml1 no-underline black'>Mensajes</Link>
+        <div>
+          <Link to="/mensajes" className="icon-link dib pa3 no-underline white">
+            <i className="material-icons">notifications</i>
+          </Link>
+          <Link to="/perfil" className="icon-link br4 dib ml2 mv3 mr4 no-underline bg-white mid-gray">
+            <i className="material-icons">person</i>
+          </Link>
         </div>
       </div>
-    )
+    );
   }
-
 }
 
-export default withRouter(Header)
+export default withRouter(Header);
