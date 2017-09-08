@@ -1,16 +1,9 @@
-.tracks {
+.items {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
 
-.track {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  line-height: 1;
+.items button {
+  margin: 0 auto;
   cursor: pointer;
-}
-
-.track a {
-  text-align: center;
 }
