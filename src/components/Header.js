@@ -10,14 +10,14 @@ class Header extends Component {
       <div className="_header flex justify-between nowrap bg-dark-blue">
         <div className="tabs">
           <NavLink
-            to="/de-otros"
+            to="/chunches-ajenos"
             activeClassName="selected"
             className="pl4 pv3 pr3 no-underline black white"
           >
-            Chunches de Otros
+            Chunches Ajenos
           </NavLink>
           <NavLink
-            to="/mios"
+            to="/mis-chunches"
             activeClassName="selected"
             className="pa3 no-underline black white"
           >

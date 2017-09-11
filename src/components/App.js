@@ -14,9 +14,9 @@ class App extends Component {
         <Header />
         <div className='pa3'>
           <Switch>
-            <Route exact path='/' render={() => <Redirect to='/de-otros' />} />
-            <Route exact path='/de-otros' component={TheirItems} />
-            <Route exact path='/mios' component={MyItems} />
+            <Route exact path='/' render={() => <Redirect to='/chunches-ajenos' />} />
+            <Route exact path='/chunches-ajenos' component={TheirItems} />
+            <Route exact path='/mis-chunches' component={MyItems} />
             <Route exact path='/mi-red' component={MyNetwork} />
             <Route exact path='/perfil' component={Profile} />
             <Route exact path='/mensajes' component={Messages} />
