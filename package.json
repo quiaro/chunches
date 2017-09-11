@@ -13,7 +13,8 @@
     "react-infinite-scroller": "^1.0.15",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "subscriptions-transport-ws": "^0.8.2"
+    "subscriptions-transport-ws": "^0.8.2",
+    "validator": "^8.2.0"
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",
