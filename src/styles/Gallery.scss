@@ -1,9 +1,11 @@
 .items {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr; }
+  grid-template-columns: 1fr 1fr 1fr;
+}
 
 .items button {
   margin-left: auto;
   margin-right: auto;
   cursor: pointer;
-  border-color: #00449e; }
+  border-color: #00449e;
+}

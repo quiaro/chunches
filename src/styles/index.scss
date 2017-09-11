@@ -1,25 +1,32 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: Arial, Geneva, sans-serif; }
+  font-family: Arial, Geneva, sans-serif;
+}
 
 input {
-  max-width: 500px; }
+  max-width: 500px;
+}
 
 .gray {
-  color: #828282; }
+  color: #828282;
+}
 
 .orange {
-  background-color: #ff6600; }
+  background-color: #ff6600;
+}
 
 .background-gray {
-  background-color: #f6f6ef; }
+  background-color: rgb(246,246,239);
+}
 
 .f11 {
-  font-size: 11px; }
+  font-size: 11px;
+}
 
 .w85 {
-  width: 85%; }
+  width: 85%;
+}
 
 .button {
   font-family: monospace;
@@ -32,4 +39,5 @@ input {
   border-style: outset;
   border-color: buttonface;
   cursor: pointer;
-  max-width: 250px; }
+  max-width: 250px;
+}
