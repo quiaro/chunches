@@ -115,8 +115,8 @@ const CREATE_USER_MUTATION = gql`
         id,
         name,
         email,
-        pursuing {
-          pursuee {
+        pursued {
+          pursued {
             id
           }
         }
@@ -136,8 +136,8 @@ const SIGNIN_USER_MUTATION = gql`
         id,
         name,
         email,
-        pursuing {
-          pursuee {
+        pursued {
+          pursued {
             id
           }
         }

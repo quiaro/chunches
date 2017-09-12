@@ -9,14 +9,15 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.lookupFriend = debounce(this.lookupFriend, 400).bind(this);
+    this.lookupUser = debounce(this.lookupUser, 100).bind(this);
   }
 
   state = {
-    friendName: ''
+    friendName: '',
+    UserList: [],
   }
 
-  async lookupFriend() {
+  async lookupUser() {
     const friendName = this.state.friendName;
     if (friendName && friendName.length > 3) {
       // Send query to find friend
@@ -28,18 +29,30 @@ class App extends Component {
         }
       })
       const users = result.data.allUsers
-
-      console.log('Results: ', users);  // eslint-disable-line
+      this.setState({ UserList: users});
     }
+  }
+
+  async sendContactRequest(user) {
+    const result = await this.props.client.mutate({
+      mutation: CREATE_CONTACT_MUTATION,
+      variables: {
+        pursuerId: localStorage.getItem(GC_USER_ID),
+        pursuedId: user.id
+      }
+    })
+    const data = result.data
+    console.log('Contact request successful: ', data);
   }
 
   render() {
 
     const user = JSON.parse(localStorage.getItem(GC_USER));
+    const { friendName, UserList } = this.state;
 
     return (
         <div>
-          { !user.pursuing.length &&
+          { !user.pursued.length &&
             <div>
               <span>To get started, look up your friends or invite them to the app so you can share or give things away to each other.</span>
             </div>
@@ -52,12 +65,20 @@ class App extends Component {
                 value={this.state.friendName}
                 onChange={ (e) => {
                   this.setState({ friendName: e.target.value });
-                  this.lookupFriend();
+                  this.lookupUser();
                 } }
                 type='text'
                 placeholder="Your Friend's Name"
               />
             </form>
+            { friendName && friendName.length > 3 && UserList.length > 0 &&
+              UserList.map((user, index) => (
+                <div key={user.id}>
+                  <span>{user.name}</span>
+                  <button onClick={ () => this.sendContactRequest(user) }>Connect</button>
+                </div>
+              ))
+            }
           </div>
         </div>
     )
@@ -75,6 +96,18 @@ const ALL_USERS_SEARCH_QUERY = gql`
     }) {
       id
       name
+    }
+  }
+`
+
+const CREATE_CONTACT_MUTATION = gql`
+  mutation CreateContactMutation ($pursuerId: ID!, $pursuedId: ID!) {
+    createContact(
+      pursuerId: $pursuerId,
+      pursuedId: $pursuedId,
+      status: PENDING
+    ) {
+      id
     }
   }
 `
