@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { gql, graphql, compose } from 'react-apollo'
-import { GC_USER_ID, GC_AUTH_TOKEN } from '../constants'
+import { GC_USER, GC_USER_ID, GC_AUTH_TOKEN } from '../constants'
 
 class Login extends Component {
 
@@ -65,9 +65,9 @@ class Login extends Component {
           password
         }
       })
-      const id = result.data.signinUser.user.id
+      const user = result.data.signinUser.user
       const token = result.data.signinUser.token
-      this._saveUserData(id, token)
+      this._saveUserData(user, token)
     } else {
       const result = await this.props.createUserMutation({
         variables: {
@@ -76,16 +76,18 @@ class Login extends Component {
           password
         }
       })
-      const id = result.data.signinUser.user.id
+      const user = result.data.signinUser.user
       const token = result.data.signinUser.token
-      this._saveUserData(id, token)
+
+      this._saveUserData(user, token)
     }
 
     this.props.history.push(`/`)
   }
 
-  _saveUserData = (id, token) => {
-    localStorage.setItem(GC_USER_ID, id)
+  _saveUserData = (user, token) => {
+    localStorage.setItem(GC_USER, JSON.stringify(user))
+    localStorage.setItem(GC_USER_ID, user.id)
     localStorage.setItem(GC_AUTH_TOKEN, token)
   }
 }
@@ -110,7 +112,14 @@ const CREATE_USER_MUTATION = gql`
     }) {
       token
       user {
-        id
+        id,
+        name,
+        email,
+        pursuing {
+          pursuee {
+            id
+          }
+        }
       }
     }
   }
@@ -124,7 +133,14 @@ const SIGNIN_USER_MUTATION = gql`
     }) {
       token
       user {
-        id
+        id,
+        name,
+        email,
+        pursuing {
+          pursuee {
+            id
+          }
+        }
       }
     }
   }

@@ -1,15 +1,5 @@
-# project: cj6rtr55x082d0188w28ojj0i
-# version: 5
-
-type Link implements Node {
-  createdAt: DateTime!
-  description: String!
-  id: ID! @isUnique
-  updatedAt: DateTime!
-  url: String!
-  postedBy: User @relation(name: "UsersLinks")
-  votes: [Vote!]! @relation(name: "VotesOnLink")
-}
+# project: cj7gdhdwb02te01141lbxk8vo
+# version: 4
 
 type File implements Node {
   contentType: String!
@@ -24,19 +14,31 @@ type File implements Node {
 
 type User implements Node {
   createdAt: DateTime!
-  id: ID! @isUnique
   email: String @isUnique
-  updatedAt: DateTime!
+  id: ID! @isUnique
+  invites: [Invite!] @relation(name: "UserInvites")
+  pursuing: [Contact!] @relation(name: "UserPursuing")
+  pursuedBy: [Contact!] @relation(name: "UserPursuedBy")
+  connections: [User!] @relation(name: "UserConnections")
   name: String!
   password: String
-  links: [Link!]! @relation(name: "UsersLinks")
-  votes: [Vote!]! @relation(name: "UsersVotes")
+  updatedAt: DateTime!
 }
 
-type Vote implements Node {
-  user: User! @relation(name: "UsersVotes")
-  link: Link! @relation(name: "VotesOnLink")
+type Invite implements Node {
   createdAt: DateTime!
   id: ID! @isUnique
+  inviter: [User!]! @relation(name: "UserInvites")
+  invitee: String @isUnique
+  status: String
+  updatedAt: DateTime!
+}
+
+type Contact implements Node {
+  id: ID! @isUnique
+  pursuer: User! @relation(name: "UserPursuing")
+  pursuee: User! @relation(name: "UserPursuedBy")
+  status: String
+  createdAt: DateTime!
   updatedAt: DateTime!
 }
