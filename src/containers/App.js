@@ -12,10 +12,15 @@ class App extends Component {
     this.lookupUser = debounce(this.lookupUser, 100).bind(this);
   }
 
+  componentDidMount() {
+    this.getContactRequests();
+  }
+
   state = {
     friendName: '',
     userList: [],
-    contactRequestSent: false
+    contactRequestSent: false,
+    contactRequestsPending: []
   }
 
   async lookupUser() {
@@ -50,13 +55,34 @@ class App extends Component {
     }, 3000);
   }
 
+  async getContactRequests() {
+    // Send query to find friend
+    const result = await this.props.client.query({
+      query: ALL_CONTACTS_SEARCH_QUERY,
+      variables: {
+        uid: localStorage.getItem(GC_USER_ID),
+      }
+    })
+    const contactRequests = result.data.allContacts
+    this.setState({ contactRequestsPending: contactRequests });
+  }
+
   render() {
 
     const user = JSON.parse(localStorage.getItem(GC_USER));
-    const { friendName, userList, contactRequestSent } = this.state;
+    const { friendName, userList, contactRequestSent, contactRequestsPending } = this.state;
 
     return (
         <div>
+          { contactRequestsPending.length > 0 &&
+            contactRequestsPending.map((contactRequest, index) => (
+              <div key={contactRequest.id}>
+                <span><em>{contactRequest.pursuer.name}</em> would like to exchange things with you</span>
+                <button onClick={ () => this.acceptContactRequest() }>Accept</button>
+                <button onClick={ () => this.refuseContactRequest() }>Reject</button>
+              </div>
+            ))
+          }
           { contactRequestSent &&
             <div>
               <span>Contact request sent!</span>
@@ -106,6 +132,26 @@ const ALL_USERS_SEARCH_QUERY = gql`
     }) {
       id
       name
+    }
+  }
+`
+
+const ALL_CONTACTS_SEARCH_QUERY = gql`
+  query AllContactsSearchQuery($uid: ID!) {
+    allContacts(filter: {
+      AND: [{
+        pursued: {
+          id: $uid
+        }
+      }, {
+        status: PENDING
+      }]
+    }) {
+      id
+      pursuer {
+        id
+        name
+      }
     }
   }
 `
