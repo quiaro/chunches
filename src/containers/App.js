@@ -47,7 +47,9 @@ class App extends Component {
         pursuedId: user.id
       }
     })
-    const data = result.data
+    // TODO: Error handling
+    console.log('Contact request sent: ', result.data);
+
     this.setState({ contactRequestSent: true });
 
     setTimeout(() => {
@@ -67,6 +69,22 @@ class App extends Component {
     this.setState({ contactRequestsPending: contactRequests });
   }
 
+  async resolveContactRequest(contactRequestId, state) {
+    const result = await this.props.client.mutate({
+      mutation: UPDATE_CONTACT_MUTATION,
+      variables: {
+        cid: contactRequestId,
+        state: state
+      }
+    })
+    // TODO: Error handling
+    const updatedContactId = result.data.updateContact.id;
+    const contactRequests = this.state.contactRequestsPending.filter(
+      (contactRequest) => contactRequest.id !== updatedContactId
+    )
+    this.setState({ contactRequestsPending: contactRequests });
+  }
+
   render() {
 
     const user = JSON.parse(localStorage.getItem(GC_USER));
@@ -78,8 +96,8 @@ class App extends Component {
             contactRequestsPending.map((contactRequest, index) => (
               <div key={contactRequest.id}>
                 <span><em>{contactRequest.pursuer.name}</em> would like to exchange things with you</span>
-                <button onClick={ () => this.acceptContactRequest() }>Accept</button>
-                <button onClick={ () => this.refuseContactRequest() }>Reject</button>
+                <button onClick={ () => this.resolveContactRequest(contactRequest.id, 'ACCEPTED') }>Accept</button>
+                <button onClick={ () => this.resolveContactRequest(contactRequest.id, 'REJECTED') }>Reject</button>
               </div>
             ))
           }
@@ -136,6 +154,8 @@ const ALL_USERS_SEARCH_QUERY = gql`
   }
 `
 
+// TODO: It would be better to fetch all contact requests instead, load them
+// into the store and then just query for the ones that are pending
 const ALL_CONTACTS_SEARCH_QUERY = gql`
   query AllContactsSearchQuery($uid: ID!) {
     allContacts(filter: {
@@ -162,6 +182,17 @@ const CREATE_CONTACT_MUTATION = gql`
       pursuerId: $pursuerId,
       pursuedId: $pursuedId,
       status: PENDING
+    ) {
+      id
+    }
+  }
+`
+
+const UPDATE_CONTACT_MUTATION = gql`
+  mutation UpdateContactMutation ($cid: ID!, $state: ContactRequestStatus!) {
+    updateContact(
+      id: $cid,
+      status: $state
     ) {
       id
     }
