@@ -20,7 +20,9 @@ class App extends Component {
     friendName: '',
     userList: [],
     contactRequestSent: false,
-    contactRequestsPending: []
+    contactRequestsPending: [],
+    itemTitle: '',
+    itemPosted: false
   }
 
   async lookupUser() {
@@ -85,10 +87,33 @@ class App extends Component {
     this.setState({ contactRequestsPending: contactRequests });
   }
 
+  async postFreeItem() {
+    const { itemTitle } = this.state;
+
+    const result = await this.props.client.mutate({
+      mutation: CREATE_ITEM_MUTATION,
+      variables: {
+        title: itemTitle,
+        ownerId: localStorage.getItem(GC_USER_ID),
+      }
+    })
+    // TODO: Error handling
+    console.log('Item posted: ', result.data);
+
+    this.setState({ itemPosted: true });
+
+    setTimeout(() => {
+      this.setState({
+        itemTitle: '',
+        itemPosted: false
+      });
+    }, 3000);
+  }
+
   render() {
 
     const user = JSON.parse(localStorage.getItem(GC_USER));
-    const { friendName, userList, contactRequestSent, contactRequestsPending } = this.state;
+    const { friendName, userList, contactRequestSent, contactRequestsPending, itemPosted } = this.state;
 
     return (
         <div>
@@ -133,6 +158,24 @@ class App extends Component {
                 </div>
               ))
             }
+          </div>
+          <div>
+            <h3>Give Away Something</h3>
+            <form>
+              <input
+                value={this.state.itemTitle}
+                onChange={ (e) => this.setState({ itemTitle: e.target.value }) }
+                type='text'
+                placeholder="Item Name"
+              />
+              <button onClick={ (e) => {
+                e.preventDefault();
+                this.postFreeItem()
+              } }>Post Gift</button>
+              { itemPosted &&
+                <span>Your gift is now available to all your friends</span>
+              }
+            </form>
           </div>
         </div>
     )
@@ -193,6 +236,17 @@ const UPDATE_CONTACT_MUTATION = gql`
     updateContact(
       id: $cid,
       status: $state
+    ) {
+      id
+    }
+  }
+`
+
+const CREATE_ITEM_MUTATION = gql`
+  mutation CreateItemMutation ($title: String!, $ownerId: ID!) {
+    createItem(
+      title: $title,
+      ownerId: $ownerId,
     ) {
       id
     }

@@ -1,5 +1,5 @@
 # project: cj7gdhdwb02te01141lbxk8vo
-# version: 12
+# version: 16
 
 type File implements Node {
   contentType: String!
@@ -18,10 +18,11 @@ type User implements Node {
   id: ID! @isUnique
   invites: [Invite!]! @relation(name: "UserInvites")
   pursuer: [Contact!]! @relation(name: "UserPursuing")
-  pursued: [Contact!]! @relation(name: "UserPursued")
   name: String!
   password: String
   updatedAt: DateTime!
+  items: [Item!]! @relation(name: "UserItems")
+  pursued: [Contact!]! @relation(name: "UserPursued")
 }
 
 type Invite implements Node {
@@ -46,4 +47,12 @@ enum ContactRequestStatus {
   PENDING
   ACCEPTED
   REJECTED
+}
+
+type Item implements Node {
+  createdAt: DateTime!
+  id: ID! @isUnique
+  owner: User! @relation(name: "UserItems")
+  title: String!
+  updatedAt: DateTime!
 }
