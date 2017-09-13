@@ -14,7 +14,8 @@ class App extends Component {
 
   state = {
     friendName: '',
-    UserList: [],
+    userList: [],
+    contactRequestSent: false
   }
 
   async lookupUser() {
@@ -29,7 +30,7 @@ class App extends Component {
         }
       })
       const users = result.data.allUsers
-      this.setState({ UserList: users});
+      this.setState({ userList: users});
     }
   }
 
@@ -42,22 +43,31 @@ class App extends Component {
       }
     })
     const data = result.data
-    console.log('Contact request successful: ', data);
+    this.setState({ contactRequestSent: true });
+
+    setTimeout(() => {
+      this.setState({ contactRequestSent: false });
+    }, 3000);
   }
 
   render() {
 
     const user = JSON.parse(localStorage.getItem(GC_USER));
-    const { friendName, UserList } = this.state;
+    const { friendName, userList, contactRequestSent } = this.state;
 
     return (
         <div>
+          { contactRequestSent &&
+            <div>
+              <span>Contact request sent!</span>
+            </div>
+          }
+          <h1>Welcome to the app!</h1>
           { !user.pursued.length &&
             <div>
               <span>To get started, look up your friends or invite them to the app so you can share or give things away to each other.</span>
             </div>
           }
-          <h1>Welcome to the app!</h1>
           <div>
             <h3>Find a friend</h3>
             <form>
@@ -71,8 +81,8 @@ class App extends Component {
                 placeholder="Your Friend's Name"
               />
             </form>
-            { friendName && friendName.length > 3 && UserList.length > 0 &&
-              UserList.map((user, index) => (
+            { friendName && friendName.length > 3 && userList.length > 0 &&
+              userList.map((user, index) => (
                 <div key={user.id}>
                   <span>{user.name}</span>
                   <button onClick={ () => this.sendContactRequest(user) }>Connect</button>
