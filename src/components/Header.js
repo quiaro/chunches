@@ -10,21 +10,21 @@ class Header extends Component {
       <div className="_header flex justify-between nowrap bg-dark-blue">
         <div className="tabs">
           <NavLink
-            to="/chunches-ajenos"
+            to="/their-items"
             activeClassName="selected"
             className="pl4 pv3 pr3 no-underline black white"
           >
             Chunches Ajenos
           </NavLink>
           <NavLink
-            to="/mis-chunches"
+            to="/my-items"
             activeClassName="selected"
             className="pa3 no-underline black white"
           >
             Mis Chunches
           </NavLink>
           <NavLink
-            to="/mi-red"
+            to="/network"
             activeClassName="selected"
             className="pa3 no-underline black white"
           >
@@ -32,10 +32,10 @@ class Header extends Component {
           </NavLink>
         </div>
         <div>
-          <Link to="/mensajes" className="icon-link dib pa3 no-underline white">
+          <Link to="/messages" className="icon-link dib pa3 no-underline white">
             <i className="material-icons">notifications</i>
           </Link>
-          <Link to="/perfil" className="icon-link br4 dib ml2 mv3 mr4 no-underline bg-white mid-gray">
+          <Link to="/profile" className="icon-link br4 dib ml2 mv3 mr4 no-underline bg-white mid-gray">
             <i className="material-icons">person</i>
           </Link>
         </div>

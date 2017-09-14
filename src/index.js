@@ -4,10 +4,11 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ApolloProvider, createNetworkInterface, ApolloClient } from 'react-apollo'
 import { GC_AUTH_TOKEN } from './constants'
 
-import Home from './containers/Home';
-import App from './containers/App';
-import Logout from './containers/Logout';
 import Login from './containers/Login';
+
+import Home from './components/Home';
+import App from './components/App';
+import Logout from './components/Logout';
 
 import './styles/index.css';
 

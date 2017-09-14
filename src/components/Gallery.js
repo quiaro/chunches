@@ -128,7 +128,7 @@ class Gallery extends Component {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         // copy items
-        const pageNumber = parseInt(url.split('page')[1]);
+        const pageNumber = parseInt(url.split('page')[1], 10);
 
         if (pageNumber <= 3) {
           const currentItems = this.state.items.slice();
