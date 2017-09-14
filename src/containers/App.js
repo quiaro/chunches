@@ -14,6 +14,7 @@ class App extends Component {
 
   componentDidMount() {
     this.getContactRequests();
+    this.loadAllTags();
   }
 
   state = {
@@ -22,7 +23,9 @@ class App extends Component {
     contactRequestSent: false,
     contactRequestsPending: [],
     itemTitle: '',
-    itemPosted: false
+    itemPosted: false,
+    itemTags: '',
+    tags: new Map()
   }
 
   async lookupUser() {
@@ -60,7 +63,6 @@ class App extends Component {
   }
 
   async getContactRequests() {
-    // Send query to find friend
     const result = await this.props.client.query({
       query: ALL_CONTACTS_SEARCH_QUERY,
       variables: {
@@ -69,6 +71,15 @@ class App extends Component {
     })
     const contactRequests = result.data.allContacts
     this.setState({ contactRequestsPending: contactRequests });
+  }
+
+  async loadAllTags() {
+    const result = await this.props.client.query({
+      query: ALL_TAGS_QUERY
+    })
+    let tags = result.data.allTags.map(tag => [tag.key, tag.id]);
+    tags = new Map(tags);
+    this.setState({ tags: tags });
   }
 
   async resolveContactRequest(contactRequestId, state) {
@@ -88,26 +99,51 @@ class App extends Component {
   }
 
   async postFreeItem() {
-    const { itemTitle } = this.state;
+    const { itemTitle, itemTags, tags } = this.state;
+    let itemTagsArray = itemTags.split(',');
+    itemTagsArray = itemTagsArray.map(tag => tag.trim());
 
+    // Create new free item for user
     const result = await this.props.client.mutate({
       mutation: CREATE_ITEM_MUTATION,
       variables: {
         title: itemTitle,
         ownerId: localStorage.getItem(GC_USER_ID),
+        status: 'FREE'
       }
     })
-    // TODO: Error handling
-    console.log('Item posted: ', result.data);
 
+    const itemId = result.data.createItem.id;
+
+    // Show confirmation message
     this.setState({ itemPosted: true });
 
     setTimeout(() => {
       this.setState({
         itemTitle: '',
+        itemTags: '',
         itemPosted: false
       });
     }, 3000);
+
+    const tagsPromises = itemTagsArray.map(tag => {
+      if (tags.has(tag)) {
+        // tag already exists; return a resolved promise
+        return Promise.resolve(true);
+      } else {
+        return this.props.client.mutate({
+          mutation: CREATE_TAG_MUTATION,
+          variables: {
+            tag: tag,
+            itemsIds: [ itemId ],
+          }
+        });
+      }
+    })
+
+    Promise.all(tagsPromises).then((values) => {
+      console.log('Tags were resolved: ', values);
+    });
   }
 
   render() {
@@ -167,6 +203,12 @@ class App extends Component {
                 onChange={ (e) => this.setState({ itemTitle: e.target.value }) }
                 type='text'
                 placeholder="Item Name"
+              />
+              <input
+                value={this.state.itemTags}
+                onChange={ (e) => this.setState({ itemTags: e.target.value }) }
+                type='text'
+                placeholder="Item Tags"
               />
               <button onClick={ (e) => {
                 e.preventDefault();
@@ -242,11 +284,33 @@ const UPDATE_CONTACT_MUTATION = gql`
   }
 `
 
+const ALL_TAGS_QUERY = gql`
+  query AllTags {
+    allTags(orderBy: key_ASC) {
+      id
+      key
+    }
+  }
+`
+
+const CREATE_TAG_MUTATION = gql`
+  mutation CreateTagMutation ($tag: String!, $itemsIds: [ID!]) {
+    createTag(
+      key: $tag,
+      itemsIds: $itemsIds
+    ) {
+      id
+      key
+    }
+  }
+`
+
 const CREATE_ITEM_MUTATION = gql`
-  mutation CreateItemMutation ($title: String!, $ownerId: ID!) {
+  mutation CreateItemMutation ($title: String!, $ownerId: ID!, $status: ItemStatus!) {
     createItem(
       title: $title,
       ownerId: $ownerId,
+      status: $status
     ) {
       id
     }

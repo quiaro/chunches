@@ -1,5 +1,5 @@
 # project: cj7gdhdwb02te01141lbxk8vo
-# version: 16
+# version: 18
 
 type File implements Node {
   contentType: String!
@@ -49,10 +49,25 @@ enum ContactRequestStatus {
   REJECTED
 }
 
+enum ItemStatus {
+  FREE
+  SHARE
+}
+
 type Item implements Node {
   createdAt: DateTime!
   id: ID! @isUnique
   owner: User! @relation(name: "UserItems")
+  tags: [Tag!]! @relation(name: "ItemTags")
   title: String!
+  status: ItemStatus
+  updatedAt: DateTime!
+}
+
+type Tag implements Node {
+  id: ID! @isUnique
+  key: String!
+  items: [Item!]! @relation(name: "ItemTags")
+  createdAt: DateTime!
   updatedAt: DateTime!
 }
