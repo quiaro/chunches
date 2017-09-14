@@ -77,8 +77,16 @@ class GiveAwayForm extends Component {
 
         const tagsPromises = itemTagsArray.map(tag => {
           if (tags.has(tag)) {
-            // tag already exists; return a resolved promise
-            return Promise.resolve(true);
+            const tagId = tags.get(tag);
+
+            // tag already exists, add item to tag
+            return this.props.client.mutate({
+              mutation: UPDATE_TAG_MUTATION,
+              variables: {
+                tagId: tagId,
+                itemId: itemId,
+              }
+            });
           } else {
             return this.props.client.mutate({
               mutation: CREATE_TAG_MUTATION,
@@ -159,6 +167,24 @@ const CREATE_TAG_MUTATION = gql`
     ) {
       id
       key
+    }
+  }
+`
+
+const UPDATE_TAG_MUTATION = gql`
+  mutation UpdateTagMutation ($tagId: ID!, $itemId: ID!) {
+    addToItemTags(
+      itemsItemId: $itemId,
+      tagsTagId: $tagId
+    ) {
+      itemsItem {
+        id
+        title
+      }
+      tagsTag {
+        id
+        key
+      }
     }
   }
 `
