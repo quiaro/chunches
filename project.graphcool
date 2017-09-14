@@ -1,5 +1,5 @@
 # project: cj7gdhdwb02te01141lbxk8vo
-# version: 20
+# version: 22
 
 type File implements Node {
   contentType: String!
@@ -10,6 +10,7 @@ type File implements Node {
   size: Int!
   updatedAt: DateTime!
   url: String! @isUnique
+  item: Item @relation(name: "ItemImage")
 }
 
 type User implements Node {
@@ -62,6 +63,7 @@ type Item implements Node {
   title: String!
   status: ItemStatus
   updatedAt: DateTime!
+  image: File! @relation(name: "ItemImage")
 }
 
 type Tag implements Node {
