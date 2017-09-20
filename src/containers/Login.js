@@ -1,33 +1,10 @@
 import React, { Component } from 'react'
 import { gql, graphql, compose } from 'react-apollo'
-import styled from 'styled-components';
+import FullContainer from '../components/styled/FullContainer'
+import ModalHeader from '../components/styled/ModalHeader'
+import Button from '../components/styled/Button'
+import Anchor from '../components/styled/Anchor'
 import { GC_USER, GC_USER_ID, GC_AUTH_TOKEN } from '../constants'
-
-const FullContainer = styled.div`
-  background-color: ${props => props.theme.background};
-  height: 100vh;
-  width: 100vw;
-
-  > article {
-    overflow: hidden;
-  }
-`
-
-const H4 = styled.h4`
-  background-color: ${props => props.theme.main};
-`
-
-const Button = styled.button`
-  background-color: ${props => props.theme.button_background};
-  color: ${props => props.theme.button_text};
-  border: 0 none;
-  cursor: pointer;
-`
-
-const StyledLink = styled.a`
-  color: ${props => props.theme.button_background};
-  cursor: pointer;
-`
 
 class Login extends Component {
 
@@ -44,9 +21,9 @@ class Login extends Component {
       <FullContainer className='pv5'>
         <article className='center bg-white mw5 mw6-ns br3 ba b--black-30 shadow-2'>
 
-          <H4 className='f4 br--top white mv0 pa3 shadow-4'>
+          <ModalHeader className='f4 br--top white mv0 pa3 shadow-4'>
             {this.state.login ? 'Login' : 'Sign Up'}
-          </H4>
+          </ModalHeader>
 
           <main className="ph3 pt2 pb4 black-60">
             <form className="measure center">
@@ -101,13 +78,13 @@ class Login extends Component {
                 </Button>
               </div>
               <div className="lh-copy mt3">
-                <StyledLink
+                <Anchor
                   className='f6 link underline-hover dim db'
                   onClick={(e) => { e.preventDefault(); this.setState({ login: !this.state.login })} }
                 >
                   {this.state.login ? 'Need to create an account?' : 'Already have an account?'}
-                </StyledLink>
-                <StyledLink href="#0" className="f6 link underline-hover dim db">Forgot your password?</StyledLink>
+                </Anchor>
+                <Anchor href="#0" className="f6 link underline-hover dim db">Forgot your password?</Anchor>
               </div>
             </form>
           </main>
