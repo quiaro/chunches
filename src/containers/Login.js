@@ -1,6 +1,33 @@
 import React, { Component } from 'react'
 import { gql, graphql, compose } from 'react-apollo'
+import styled from 'styled-components';
 import { GC_USER, GC_USER_ID, GC_AUTH_TOKEN } from '../constants'
+
+const FullContainer = styled.div`
+  background-color: ${props => props.theme.background};
+  height: 100vh;
+  width: 100vw;
+
+  > article {
+    overflow: hidden;
+  }
+`
+
+const H4 = styled.h4`
+  background-color: ${props => props.theme.main};
+`
+
+const Button = styled.button`
+  background-color: ${props => props.theme.button_background};
+  color: ${props => props.theme.button_text};
+  border: 0 none;
+  cursor: pointer;
+`
+
+const StyledLink = styled.a`
+  color: ${props => props.theme.button_background};
+  cursor: pointer;
+`
 
 class Login extends Component {
 
@@ -14,44 +41,78 @@ class Login extends Component {
   render() {
 
     return (
-      <div>
-        <h4 className='mv3'>{this.state.login ? 'Login' : 'Sign Up'}</h4>
-        <div className='flex flex-column'>
-          {!this.state.login &&
-          <input
-            value={this.state.name}
-            onChange={(e) => this.setState({ name: e.target.value })}
-            type='text'
-            placeholder='Your name'
-          />}
-          <input
-            value={this.state.email}
-            onChange={(e) => this.setState({ email: e.target.value })}
-            type='text'
-            placeholder='Your email address'
-          />
-          <input
-            value={this.state.password}
-            onChange={(e) => this.setState({ password: e.target.value })}
-            type='password'
-            placeholder='Choose a safe password'
-          />
-        </div>
-        <div className='flex mt3'>
-          <div
-            className='pointer mr2 button'
-            onClick={() => this._confirm()}
-          >
-            {this.state.login ? 'login' : 'create account' }
-          </div>
-          <div
-            className='pointer button'
-            onClick={() => this.setState({ login: !this.state.login })}
-          >
-            {this.state.login ? 'need to create an account?' : 'already have an account?'}
-          </div>
-        </div>
-      </div>
+      <FullContainer className='pv5'>
+        <article className='center bg-white mw5 mw6-ns br3 ba b--black-30 shadow-2'>
+
+          <H4 className='f4 br--top white mv0 pa3 shadow-4'>
+            {this.state.login ? 'Login' : 'Sign Up'}
+          </H4>
+
+          <main className="ph3 pt2 pb4 black-60">
+            <form className="measure center">
+              <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
+                {!this.state.login &&
+
+                <div className="mt3 f6">
+                  <label className="db fw6 lh-copy" htmlFor="user-name">Name</label>
+                  <input
+                    id="user-name"
+                    className="pa2 input-reset ba b--black-60 bg-transparent w-100"
+                    value={this.state.name}
+                    onChange={(e) => this.setState({ name: e.target.value })}
+                    type='text'
+                    placeholder='Your name'
+                  />
+                </div>
+                }
+
+                <div className="mt3 f6">
+                  <label className="db fw6 lh-copy" htmlFor="email-address">Email</label>
+                  <input
+                    id="email-address"
+                    className="pa2 input-reset ba b--black-60 bg-transparent w-100"
+                    value={this.state.email}
+                    onChange={(e) => this.setState({ email: e.target.value })}
+                    type='email'
+                    placeholder='Your email address'
+                  />
+                </div>
+
+                <div className="mv3 f6">
+                  <label className="db fw6 lh-copy" htmlFor="password">Password</label>
+                  <input
+                    className="pa2 input-reset ba b--black-60 bg-transparent w-100"
+                    id="password"
+                    value={this.state.password}
+                    onChange={(e) => this.setState({ password: e.target.value })}
+                    type='password'
+                    placeholder='Choose a safe password'
+                  />
+                </div>
+                <label className="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" /> Remember me</label>
+              </fieldset>
+
+              <div>
+                <Button
+                  className='f6 link dim ph3 pv2 mb2 dib white bg-black mr3'
+                  onClick={(e) => { e.preventDefault(); this._confirm() }}
+                >
+                  {this.state.login ? 'Login' : 'Create account' }
+                </Button>
+              </div>
+              <div className="lh-copy mt3">
+                <StyledLink
+                  className='f6 link underline-hover dim db'
+                  onClick={(e) => { e.preventDefault(); this.setState({ login: !this.state.login })} }
+                >
+                  {this.state.login ? 'Need to create an account?' : 'Already have an account?'}
+                </StyledLink>
+                <StyledLink href="#0" className="f6 link underline-hover dim db">Forgot your password?</StyledLink>
+              </div>
+            </form>
+          </main>
+        </article>
+      </FullContainer>
     )
   }
 
