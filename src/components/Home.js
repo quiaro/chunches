@@ -1,13 +1,18 @@
 import React from 'react'
-import { Redirect } from 'react-router-dom'
-import PublicHome from '../components/public/Home'
 
-import { GC_USER_ID } from '../constants'
+import HomePrivate from './HomePrivate'
+import HomePublic from './HomePublic'
+import { isLoggedIn } from '../utils/AuthService';
 
 const Home = () => {
-  const userId = localStorage.getItem(GC_USER_ID)
 
-  return userId ? <Redirect to="/home"/> : <PublicHome />;
+  return (
+      isLoggedIn() ? (
+        <HomePrivate></HomePrivate>
+      ) : (
+        <HomePublic></HomePublic>
+      )
+  )
 }
 
-export default Home;
+export default Home
