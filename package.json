@@ -17,6 +17,7 @@
     "react-infinite-scroller": "^1.0.15",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "stacktrace-js": "^2.0.0",
     "styled-components": "^2.1.2",
     "subscriptions-transport-ws": "^0.8.2",
     "validator": "^8.2.0"

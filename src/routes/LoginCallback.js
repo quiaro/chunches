@@ -6,6 +6,7 @@ import {
   getEmail,
   getName,
 } from '../utils/AuthService';
+import ErrorHandler from '../utils/ErrorHandler';
 import { gql, graphql } from 'react-apollo';
 
 class Callback extends Component {
@@ -27,8 +28,8 @@ class Callback extends Component {
         console.log('Response from create user', response);
         this.props.history.push('/');
       })
-      .catch((e, b, d) => {
-        console.error('Error of life ', e);
+      .catch(e => {
+        ErrorHandler(e);
         this.props.history.push('/');
       });
   };
