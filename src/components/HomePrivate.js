@@ -1,26 +1,27 @@
 import React from 'react'
-
-// import GetStarted from './GetStarted'
+import { graphql } from 'react-apollo';
+import GetStarted from './GetStarted'
 import TradeRequestNotifications from '../containers/TradeRequestNotifications'
 import TradeRequestForm from '../containers/TradeRequestForm'
 import GiveAwayForm from '../containers/GiveAwayForm'
-// import { GC_USER } from '../constants'
+import USER_QUERY from '../queries/user';
 
-const HomePrivate = () => {
-  // const user = JSON.parse(localStorage.getItem(GC_USER));
+const HomePrivate = (props) => {
 
   return (
-    <div>
-      <TradeRequestNotifications></TradeRequestNotifications>
-      <h1>Welcome to the app!</h1>
+    props.data.loading
+      ? <div>Loading</div>
+      : <div>
+          {/* <TradeRequestNotifications></TradeRequestNotifications> */}
+          <h1>Welcome to the app!</h1>
 
-      {/* <GetStarted tradeRequestsSent={user.pursuer.length}></GetStarted> */}
+          <GetStarted tradeRequestsSent={props.data.user.pursuer.length}></GetStarted>
 
-      <TradeRequestForm></TradeRequestForm>
+          {/* <TradeRequestForm></TradeRequestForm> */}
 
-      <GiveAwayForm></GiveAwayForm>
-    </div>
+          {/* <GiveAwayForm></GiveAwayForm> */}
+        </div>
   )
 }
 
-export default HomePrivate
+export default graphql(USER_QUERY)(HomePrivate)
