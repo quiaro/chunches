@@ -2,7 +2,7 @@ import React from 'react'
 
 import HomePrivate from './HomePrivate'
 import HomePublic from './HomePublic'
-import { isLoggedIn } from '../utils/AuthService';
+import { isLoggedIn } from '../common/AuthService';
 
 const Home = () => {
 

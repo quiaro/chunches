@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import NavLinks from './NavLinks';
-import { login, logout, isLoggedIn } from '../utils/AuthService';
+import { login, logout, isLoggedIn } from '../common/AuthService';
 
 import '../styles/NavBar.css';
 

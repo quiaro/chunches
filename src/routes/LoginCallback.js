@@ -7,8 +7,8 @@ import {
   getIdToken,
   getEmail,
   getName,
-} from '../utils/AuthService';
-import ErrorHandler from '../utils/ErrorHandler';
+} from '../common/AuthService';
+import ErrorHandler from '../common/ErrorHandler';
 import USER_QUERY from '../queries/user';
 
 class Callback extends Component {
