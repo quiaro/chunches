@@ -20,7 +20,7 @@ const HomePrivate = (props) => {
 
           <TradeRequestForm uid={user.id}></TradeRequestForm>
 
-          {/* <GiveAwayForm></GiveAwayForm> */}
+          <GiveAwayForm uid={user.id}></GiveAwayForm>
         </div>
   )
 }
