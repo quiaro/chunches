@@ -1,7 +1,7 @@
 import React from 'react'
 import { graphql } from 'react-apollo';
 import GetStarted from './GetStarted'
-import TradeRequestNotifications from '../containers/TradeRequestNotifications'
+import TradeRequestNotifications from './TradeRequestNotifications'
 import TradeRequestForm from '../containers/TradeRequestForm'
 import GiveAwayForm from '../containers/GiveAwayForm'
 import USER_QUERY from '../queries/user';
