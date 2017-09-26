@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { gql, graphql, compose, withApollo } from 'react-apollo'
 import { debounce } from '../common/utils'
 import ErrorHandler from '../common/ErrorHandler';
-import { GC_USER_ID } from '../constants'
 
 class TradeRequestForm extends Component {
 
