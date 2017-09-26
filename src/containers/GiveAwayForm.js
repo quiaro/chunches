@@ -42,8 +42,16 @@ class GiveAwayForm extends Component {
     data.append('data', itemImage[0]);
 
     this.postItemRequest(type, data)
-      .then(itemId => {
-        this.postItemTags(itemId);
+      .then(res => {
+        const variables = {
+          imageId: res.imageId,
+          itemId: res.itemId,
+        }
+        // Async calls:
+        // - link image to item
+        // - save tags for item
+        this.props.setItemImage({ variables });
+        this.postItemTags(res.itemId);
 
         // Clear state and show confirmation message
         this.setState({
@@ -63,26 +71,32 @@ class GiveAwayForm extends Component {
   }
 
   postItemRequest(type, data) {
-    return fetch(FILE_ENDPOINT, {
+    const { itemTitle } = this.state;
+    const { uid } = this.props;
+
+    const variables = {
+      title: itemTitle,
+      ownerId: uid,
+      status: type,
+    };
+
+    // Simultaneously make calls to post item image and
+    // create a new item for the user
+    const postImage = fetch(FILE_ENDPOINT, {
       method: 'POST',
       body: data,
-    })
-      .then(response => response.json())
-      .then(image => {
-        const { itemTitle } = this.state;
-        const { uid } = this.props;
-        const variables = {
-          title: itemTitle,
-          ownerId: uid,
-          status: type,
-          imageId: image.id,
-        };
+    });
 
-        // Create an item for the user (include the image previously posted)
-        return this.props.createItem({ variables }).then(result => {
-          return result.data.createItem.id;
-        });
-      });
+    const createItem = this.props.createItem({ variables });
+
+    return Promise.all([postImage, createItem]).then(values => {
+      return values[0].json().then(image => {
+        return {
+          imageId: image.id,
+          itemId: values[1].data.createItem.id
+        }
+      })
+    });
   }
 
   postItemTags(itemId) {
@@ -203,13 +217,11 @@ const CREATE_ITEM_MUTATION = gql`
     $title: String!
     $ownerId: ID!
     $status: ItemStatus!
-    $imageId: ID!
   ) {
     createItem(
       title: $title
       ownerId: $ownerId
       status: $status
-      imageId: $imageId
     ) {
       id
     }
