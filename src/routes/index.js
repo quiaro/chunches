@@ -1,6 +1,6 @@
 import Home from '../components/Home'
-import TheirItems from '../components/TheirItems'
-import MyItems from '../components/MyItems'
+import OfferedItems from '../components/OfferedItems'
+import OwnedItems from '../components/OwnedItems'
 import MyNetwork from '../components/MyNetwork'
 import Profile from '../components/Profile'
 import Messages from '../components/Messages'
@@ -19,13 +19,13 @@ const routes = [
     path: '/offered',
     name: 'offered',
     exact: true,
-    component: TheirItems,
+    component: OfferedItems,
   },
   {
     path: '/owned',
     name: 'owned',
     exact: true,
-    component: MyItems,
+    component: OwnedItems,
   },
   {
     path: '/network',
