@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import { gql, withApollo } from 'react-apollo'
+import { gql, graphql, compose, withApollo } from 'react-apollo'
 import { debounce } from '../common/utils'
+import ErrorHandler from '../common/ErrorHandler';
 import { GC_USER_ID } from '../constants'
 
 class TradeRequestForm extends Component {
 
   constructor(props) {
     super(props);
-
     this.lookupUser = debounce(this.lookupUser, 100).bind(this);
   }
 
@@ -17,48 +17,50 @@ class TradeRequestForm extends Component {
     tradeRequestSent: false,
   }
 
-  async lookupUser() {
-    const userName = this.state.userName;
-    if (userName && userName.length > 3) {
+  lookupUser = (uid, userName) => {
+    // Reset user list before updating with new results
+    this.setState({ userList: [] });
+
+    if (uid && userName && userName.length > 3) {
       // Find users matching the user name
-      const result = await this.props.client.query({
+      this.props.client.query({
         query: ALL_USERS_SEARCH_QUERY,
         variables: {
-          uid: localStorage.getItem(GC_USER_ID),
+          uid: uid,
           searchText: userName
         }
-      })
-
-      // TODO: Error handling
-      const users = result.data.allUsers
-      this.setState({ userList: users});
+      }).then(res => {
+        this.setState({ userList: res.data.allUsers})
+      }).catch(e => ErrorHandler(e))
     }
   }
 
-  async sendTradeRequest(user) {
-    const result = await this.props.client.mutate({
-      mutation: CREATE_TRADE_REQUEST_MUTATION,
-      variables: {
-        pursuerId: localStorage.getItem(GC_USER_ID),
-        pursuedId: user.id
-      }
-    })
-    // TODO: Error handling
-    console.log('Trade request sent: ', result.data);
+  sendTradeRequest = (uid, user) => {
+    const variables = {
+      pursuerId: uid,
+      pursuedId: user.id
+    };
 
-    this.setState({
-      userName: '',
-      userList: [],
-      tradeRequestSent: true
-    });
+    this.props.createTradeRequest({ variables })
+      .then(result => {
+        console.log('Trade request sent: ', result.data);
 
-    setTimeout(() => {
-      this.setState({ tradeRequestSent: false });
-    }, 3000);
+        this.setState({
+          userName: '',
+          userList: [],
+          tradeRequestSent: true
+        });
+
+        setTimeout(() => {
+          this.setState({ tradeRequestSent: false });
+        }, 3000);
+      })
+      .catch(e => ErrorHandler(e));
   }
 
   render() {
 
+    const { uid } = this.props;
     const { userName, userList, tradeRequestSent } = this.state;
 
     return (
@@ -68,18 +70,19 @@ class TradeRequestForm extends Component {
           <input
             value={this.state.userName}
             onChange={ (e) => {
-              this.setState({ userName: e.target.value });
-              this.lookupUser();
+              const userName = e.target.value;
+              this.setState({ userName });
+              this.lookupUser(uid, userName);
             } }
             type='text'
             placeholder="Your Friend's Name"
           />
         </form>
         { userName && userName.length > 3 && userList.length > 0 &&
-          userList.map((user, index) => (
+          userList.map((user) => (
             <div key={user.id}>
               <span>{user.name}</span>
-              <button onClick={ () => this.sendTradeRequest(user) }>Connect</button>
+              <button onClick={ () => this.sendTradeRequest(uid, user) }>Connect</button>
             </div>
           ))
         }
@@ -94,7 +97,7 @@ class TradeRequestForm extends Component {
 }
 
 const ALL_USERS_SEARCH_QUERY = gql`
-  query AllUsersSearchQuery($uid: ID!, $searchText: String!) {
+  query ($uid: ID!, $searchText: String!) {
     allUsers(filter: {
       AND: [{
         id_not: $uid
@@ -109,7 +112,7 @@ const ALL_USERS_SEARCH_QUERY = gql`
 `
 
 const CREATE_TRADE_REQUEST_MUTATION = gql`
-  mutation CreateTradeRequestMutation ($pursuerId: ID!, $pursuedId: ID!) {
+  mutation ($pursuerId: ID!, $pursuedId: ID!) {
     createTradeRequest(
       pursuerId: $pursuerId,
       pursuedId: $pursuedId,
@@ -120,4 +123,7 @@ const CREATE_TRADE_REQUEST_MUTATION = gql`
   }
 `
 
-export default withApollo(TradeRequestForm)
+export default compose(
+  graphql(CREATE_TRADE_REQUEST_MUTATION, { name: 'createTradeRequest' }),
+  withApollo
+)(TradeRequestForm)

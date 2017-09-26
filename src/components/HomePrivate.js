@@ -7,17 +7,18 @@ import GiveAwayForm from '../containers/GiveAwayForm'
 import USER_QUERY from '../queries/user';
 
 const HomePrivate = (props) => {
+  const { user } = props.data;
 
   return (
     props.data.loading
       ? <div>Loading</div>
       : <div>
-          {/* <TradeRequestNotifications></TradeRequestNotifications> */}
+          <TradeRequestNotifications uid={user.id}></TradeRequestNotifications>
           <h1>Welcome to the app!</h1>
 
           <GetStarted tradeRequestsSent={props.data.user.pursuer.length}></GetStarted>
 
-          {/* <TradeRequestForm></TradeRequestForm> */}
+          <TradeRequestForm uid={user.id}></TradeRequestForm>
 
           {/* <GiveAwayForm></GiveAwayForm> */}
         </div>
