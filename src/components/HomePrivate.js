@@ -1,10 +1,8 @@
 import React from 'react'
-import { graphql } from 'react-apollo';
 import GetStarted from './GetStarted'
 import TradeRequestNotifications from './TradeRequestNotifications'
 import TradeRequestForm from '../containers/TradeRequestForm'
 import GiveAwayForm from '../containers/GiveAwayForm'
-import USER_QUERY from '../queries/user';
 
 const HomePrivate = (props) => {
   const { user } = props.data;
@@ -16,7 +14,7 @@ const HomePrivate = (props) => {
           <TradeRequestNotifications uid={user.id}></TradeRequestNotifications>
           <h1>Welcome to the app!</h1>
 
-          <GetStarted tradeRequestsSent={props.data.user.pursuer.length}></GetStarted>
+          <GetStarted tradeRequestsSent={user.pursuer.length}></GetStarted>
 
           <TradeRequestForm uid={user.id}></TradeRequestForm>
 
@@ -25,4 +23,4 @@ const HomePrivate = (props) => {
   )
 }
 
-export default graphql(USER_QUERY)(HomePrivate)
+export default HomePrivate
