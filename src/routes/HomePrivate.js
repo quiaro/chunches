@@ -1,6 +1,6 @@
 import React from 'react'
-import GetStarted from './GetStarted'
-import TradeRequestNotifications from './TradeRequestNotifications'
+import GetStarted from '../components/GetStarted'
+import TradeRequestNotifications from '../components/TradeRequestNotifications'
 import TradeRequestForm from '../containers/TradeRequestForm'
 import GiveAwayForm from '../containers/GiveAwayForm'
 

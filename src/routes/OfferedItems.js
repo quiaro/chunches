@@ -1,6 +1,6 @@
 import React from 'react'
-import SearchInput from './SearchInput'
-import Gallery from './Gallery'
+import SearchInput from '../components/SearchInput'
+import Gallery from '../components/Gallery'
 
 export default () => (
   <div>
