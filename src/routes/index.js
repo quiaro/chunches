@@ -1,4 +1,5 @@
-import Home from '../components/Home'
+import HomePublic from '../components/HomePublic'
+import HomePrivate from '../components/HomePrivate'
 import OfferedItems from '../components/OfferedItems'
 import OwnedItems from '../components/OwnedItems'
 import MyNetwork from '../components/MyNetwork'
@@ -10,10 +11,16 @@ import NotFoundPage from './NotFoundPage'
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'public-home',
     exact: true,
     public: true,
-    component: Home,
+    component: HomePublic,
+  },
+  {
+    path: '/home',
+    name: 'private-home',
+    exact: true,
+    component: HomePrivate,
   },
   {
     path: '/offered',

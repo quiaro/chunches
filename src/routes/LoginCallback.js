@@ -44,7 +44,7 @@ class Callback extends Component {
     if (loading) {
       return <div>Loading</div>
     }
-    return <Redirect to='/'/>;
+    return <Redirect to='/home'/>;
   }
 }
 
