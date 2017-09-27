@@ -8,8 +8,8 @@ import {
   ApolloClient,
 } from 'react-apollo';
 import routes from './routes';
+import App from './routes/App';
 import NavBar from './components/NavBar';
-import PrivateRoute from './components/PrivateRoute'
 import { theme } from './styles/theme';
 import { ID_TOKEN_KEY } from './constants';
 
@@ -48,11 +48,10 @@ ReactDOM.render(
           <NavBar />
           <div className="pa3">
             <Switch>
-              {routes.map(route => {
-                return route.public
-                  ? <Route key={`route-${route.name}`} {...route} />
-                  : <PrivateRoute key={`route-${route.name}`} {...route} />;
-              })}
+              {/* Public routes */}
+              {routes.filter(route => route.public)
+                     .map(route => <Route key={`route-${route.name}`} {...route} />) }
+              <Route component={App} />
             </Switch>
           </div>
         </div>
