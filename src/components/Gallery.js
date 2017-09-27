@@ -1,100 +1,105 @@
-import React, { Component } from 'react'
-import { gql, withApollo } from 'react-apollo'
-import { GC_USER_ID } from '../constants'
+import React, { Component } from 'react';
+import { gql, graphql, compose, withApollo } from 'react-apollo';
+import ErrorHandler from '../common/ErrorHandler';
 
 import '../styles/Gallery.css';
 
 class Gallery extends Component {
+
   constructor(props) {
     super(props);
 
     this.state = {
-      items: []
+      items: [],
+      itemsLoaded: false,
     };
   }
 
-  componentDidMount() {
-    this.loadItems();
+  componentWillReceiveProps(nextProps) {
+    const { uid } = this.props;
+    const { data } = nextProps;
+    // After loading all trade requests for the user, get all the items from
+    // each person in his/her network
+    if (!data.loading && data.allTradeRequests && !data.allItems) {
+      // Save the IDs of all users that have trade relationships with the user
+      const userNetwork = this.getUserNetwork(uid, data.allTradeRequests);
+
+      this.props.client.query({
+        query: ALL_NETWORK_ITEMS_QUERY,
+        variables: {
+          network: Array.from(userNetwork),
+        },
+      }).then(res => this.setState({
+        items: res.data.allItems,
+        itemsLoaded: true,
+      }))
+      .catch(e => ErrorHandler(e));
+    }
   }
 
-  async loadItems() {
-    const uid = localStorage.getItem(GC_USER_ID);
-
-    // IDs of all users that have trade relationships with the user
+  getUserNetwork(uid, allTradeRequests) {
     const userNetwork = new Set();
 
-    const result = await this.props.client.query({
-      query: ALL_ACCEPTED_TRADE_REQUESTS_QUERY,
-      variables: {
-        uid
-      }
-    })
-
-    result.data.allTradeRequests.forEach(tr => {
+    allTradeRequests.forEach(tr => {
       userNetwork.add(tr.pursuer.id);
       userNetwork.add(tr.pursued.id);
-    })
+    });
 
     // remove user from his own network
     userNetwork.delete(uid);
-
-    const networkItems = await this.props.client.query({
-      query: ALL_NETWORK_ITEMS_QUERY,
-      variables: {
-        network: Array.from(userNetwork)
-      }
-    })
-
-    this.setState({
-      items: networkItems.data.allItems
-    })
+    return userNetwork;
   }
 
   render() {
-    const loader = <div className="loader">Loading ...</div>;
+    const { items, itemsLoaded } = this.state;
 
-    const items = this.state.items.map(function(item, i) {
-      return (
-        <div className="item mb4" key={i}>
-          <a className="db center tc black link dim"
-             href="#">
+    const DOMItems = items.map(item =>
+      (
+        <div className="item mb4" key={item.id}>
+          <a className="db center tc black link dim" href="#">
+            <img
+              className="ba b--black-10"
+              alt={item.title}
+              src={`https://images.graph.cool/v1/cj7gdhdwb02te01141lbxk8vo/${item
+                .image.secret}/200x`}
+              width="200"
+              height="200"
+            />
 
-            <img className="ba b--black-10"
-                 alt={item.title}
-                 src={`https://images.graph.cool/v1/cj7gdhdwb02te01141lbxk8vo/${item.image.secret}/200x`} width="200" height="200" />
-
-            <b className="db mt2 f6 lh-copy">{item.title}</b>
+            <b className="db mt2 f6 lh-copy">
+              {item.title}
+            </b>
           </a>
-          <button className='f6 link dim ba ph3 pv2 mb2 mt2 db white bg-dark-blue'>Me sirve</button>
+          <button className="f6 link dim ba ph3 pv2 mb2 mt2 db white bg-dark-blue">
+            Me sirve
+          </button>
         </div>
-      );
-    });
+      )
+    );
 
     return (
       <div className="items pt4">
-        {items}
+        { !itemsLoaded
+            ? <div>Loading items ...</div>
+            : !items.length
+              ? <div>There are currently no items</div>
+              : DOMItems
+         }
       </div>
     );
   }
 }
 
 const ALL_ACCEPTED_TRADE_REQUESTS_QUERY = gql`
-  query AllAcceptedTradeRequestsQuery($uid: ID!) {
-    allTradeRequests(filter: {
-      AND: [{
-        OR: [{
-          pursuer: {
-            id: $uid
-          }
-        }, {
-          pursued: {
-            id: $uid
-          }
-        }]
-      }, {
-        status: ACCEPTED
-      }]
-    }) {
+  query ($uid: ID!) {
+    allTradeRequests(
+      filter: {
+        AND: [
+          { OR: [{ pursuer: { id: $uid } }, { pursued: { id: $uid } }] }
+          { status: ACCEPTED }
+        ]
+      }
+    ) {
       id
       pursuer {
         id
@@ -104,17 +109,13 @@ const ALL_ACCEPTED_TRADE_REQUESTS_QUERY = gql`
       }
     }
   }
-`
+`;
 
 const ALL_NETWORK_ITEMS_QUERY = gql`
-  query AllNetworkItemsQuery($network: [ID!]) {
-    allItems(filter: {
-      owner: {
-        id_in: $network
-      }
-    }) {
+  query ($network: [ID!]) {
+    allItems(filter: { owner: { id_in: $network } }) {
       id
-      createdAt,
+      createdAt
       image {
         name
         secret
@@ -125,10 +126,13 @@ const ALL_NETWORK_ITEMS_QUERY = gql`
         id
         name
       }
-      status,
+      status
       title
     }
   }
-`
+`;
 
-export default withApollo(Gallery)
+export default compose(
+  graphql(ALL_ACCEPTED_TRADE_REQUESTS_QUERY),
+  withApollo
+)(Gallery);
