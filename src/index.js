@@ -8,7 +8,7 @@ import {
   ApolloClient,
 } from 'react-apollo';
 import routes from './routes';
-import App from './routes/App';
+import Default from './routes/Default';
 import NavBar from './components/NavBar';
 import { theme } from './styles/theme';
 import { ID_TOKEN_KEY } from './constants';
@@ -51,7 +51,7 @@ ReactDOM.render(
               {/* Public routes */}
               {routes.filter(route => route.public)
                      .map(route => <Route key={`route-${route.name}`} {...route} />) }
-              <Route component={App} />
+              <Route component={Default} />
             </Switch>
           </div>
         </div>

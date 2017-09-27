@@ -1,6 +1,7 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
-// import PrivateRoute from './PrivateRoute';
+import PrivateRoute from '../components/PrivateRoute';
+import { login, isLoggedIn } from '../common/AuthService';
 import USER_QUERY from '../queries/user';
 
 const App = props => {
