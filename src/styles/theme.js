@@ -3,6 +3,6 @@ export const theme = {
   button_background: 'rgba(139, 0, 139, 0.75)',
   button_text: 'white',
   nav_bar: 'hsl(50, 100%, 47%)',
-  nav_height: '56px',
+  nav_height: '54px',
   nav_link_text: 'white',
 }
