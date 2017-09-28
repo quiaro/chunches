@@ -14,8 +14,6 @@ import NavBar from './components/NavBar';
 import { theme } from './styles/theme';
 import { ID_TOKEN_KEY } from './constants';
 
-// import './styles/index.css';
-
 const networkInterface = createNetworkInterface({
   uri: 'https://api.graph.cool/simple/v1/cj7gdhdwb02te01141lbxk8vo',
 });
