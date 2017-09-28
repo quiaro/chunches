@@ -1,6 +1,6 @@
 import decode from 'jwt-decode';
 import auth0 from 'auth0-js';
-import { ID_TOKEN_KEY, ACCESS_TOKEN_KEY } from '../constants'
+import { ID_TOKEN_KEY, ACCESS_TOKEN_KEY } from './constants'
 
 const CLIENT_ID = 'nPHTZW3yqOpIZ2TWKG6rAyNGqH91Vunq';
 const CLIENT_DOMAIN = 'quiros.auth0.com';

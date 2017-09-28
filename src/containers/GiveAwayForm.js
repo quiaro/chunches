@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { gql, graphql, compose } from 'react-apollo';
 import FileDropZone from '../components/styled/FileDropZone';
 import ErrorHandler from '../common/ErrorHandler';
-import { FILE_ENDPOINT } from '../constants';
+import { FILE_ENDPOINT } from '../common/constants';
 
 class GiveAwayForm extends Component {
   state = {

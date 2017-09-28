@@ -11,8 +11,8 @@ import routes from './routes';
 import Default from './routes/Default';
 import AppContainer from './components/styled/AppContainer';
 import NavBar from './components/NavBar';
+import { ID_TOKEN_KEY } from './common/constants';
 import { theme } from './styles/theme';
-import { ID_TOKEN_KEY } from './constants';
 
 const networkInterface = createNetworkInterface({
   uri: 'https://api.graph.cool/simple/v1/cj7gdhdwb02te01141lbxk8vo',
