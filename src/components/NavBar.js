@@ -16,22 +16,25 @@ class NavBar extends Component {
           {isLoggedIn() && <NavLinks />}
         </div>
 
-        <div>
-          <Link to="/messages" className="icon-link dib pa3 no-underline white">
-            <i className="material-icons">notifications</i>
-          </Link>
-          <Link
-            to="/profile"
-            className="icon-link br4 dib ml2 mv3 mr4 no-underline bg-white mid-gray"
-          >
-            <i className="material-icons">person</i>
-          </Link>
-          {isLoggedIn()
-            ? <button onClick={() => logout(this.props.history)}>
+        {isLoggedIn()
+          ? (<div>
+              <Link to="/messages" className="icon-link dib pa3 no-underline white">
+                <i className="material-icons">notifications</i>
+              </Link>
+              <Link
+                to="/profile"
+                className="icon-link br4 dib ml2 mv3 mr4 no-underline bg-white mid-gray"
+              >
+                <i className="material-icons">person</i>
+              </Link>
+              <button onClick={() => logout(this.props.history)}>
                 Log out{' '}
               </button>
-            : <button onClick={() => login()}>Log In</button>}
-        </div>
+            </div>)
+          : (<div>
+              <button onClick={() => login()}>Log In</button>
+            </div>)
+          }
       </div>
     );
   }
