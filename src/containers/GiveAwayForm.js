@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { gql, graphql, compose } from 'react-apollo';
-import Dropzone from 'react-dropzone';
+import FileDropZone from '../components/styled/FileDropZone';
 import ErrorHandler from '../common/ErrorHandler';
 import { FILE_ENDPOINT } from '../constants';
-
-import '../styles/GiveAwayForm.css';
 
 class GiveAwayForm extends Component {
   state = {
@@ -148,7 +146,7 @@ class GiveAwayForm extends Component {
             placeholder="Item Tags"
           />
 
-          <Dropzone
+          <FileDropZone
             onDrop={this.onDrop.bind(this)}
             accept="image/*"
             className="dropzone"
@@ -161,7 +159,7 @@ class GiveAwayForm extends Component {
               </div>}
             {itemImage.length > 0 &&
               <img src={itemImage[0].preview} alt={this.state.itemTitle} />}
-          </Dropzone>
+          </FileDropZone>
 
           <button
             onClick={e => {

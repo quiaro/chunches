@@ -9,11 +9,12 @@ import {
 } from 'react-apollo';
 import routes from './routes';
 import Default from './routes/Default';
+import AppContainer from './components/styled/AppContainer';
 import NavBar from './components/NavBar';
 import { theme } from './styles/theme';
 import { ID_TOKEN_KEY } from './constants';
 
-import './styles/index.css';
+// import './styles/index.css';
 
 const networkInterface = createNetworkInterface({
   uri: 'https://api.graph.cool/simple/v1/cj7gdhdwb02te01141lbxk8vo',
@@ -44,7 +45,7 @@ ReactDOM.render(
   <Router>
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
-        <div className="center">
+        <AppContainer className="center">
           <NavBar />
           <div className="pa3">
             <Switch>
@@ -54,7 +55,7 @@ ReactDOM.render(
               <Route component={Default} />
             </Switch>
           </div>
-        </div>
+        </AppContainer>
       </ThemeProvider>
     </ApolloProvider>
   </Router>,

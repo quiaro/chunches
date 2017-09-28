@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { gql, graphql, compose, withApollo } from 'react-apollo';
+import ItemGallery from './styled/ItemGallery';
 import ErrorHandler from '../common/ErrorHandler';
-
-import '../styles/Gallery.css';
 
 class Gallery extends Component {
 
@@ -78,14 +77,14 @@ class Gallery extends Component {
     );
 
     return (
-      <div className="items pt4">
+      <ItemGallery className="pt4">
         { !itemsLoaded
             ? <div>Loading items ...</div>
             : !items.length
               ? <div>There are currently no items</div>
               : DOMItems
          }
-      </div>
+      </ItemGallery>
     );
   }
 }
