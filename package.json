@@ -1,6 +1,7 @@
 {
   "name": "chunches",
   "version": "0.1.0",
+  "license": "MIT",
   "devDependencies": {
     "react-scripts": "1.0.11"
   },
