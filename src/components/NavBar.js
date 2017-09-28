@@ -8,7 +8,7 @@ import { login, logout, isLoggedIn } from '../common/AuthService';
 class NavBar extends Component {
   render() {
     return (
-      <StyledNavBar className="flex justify-between nowrap bg-dark-blue">
+      <StyledNavBar className="flex justify-between nowrap">
         <div className="logo">
           {/* TODO */}
           App Logo Here!

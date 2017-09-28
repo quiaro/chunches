@@ -1,6 +1,8 @@
 export const theme = {
-  background: 'rgba(255, 213, 1, 0.12)',
+  background: 'rgba(255, 213, 1, 0.08)',
   button_background: 'rgba(139, 0, 139, 0.75)',
   button_text: 'white',
-  main: 'rgba(139, 0, 139, 0.52)'
+  nav_bar: 'hsl(50, 100%, 47%)',
+  nav_height: '56px',
+  nav_link_text: 'white',
 }
