@@ -12,6 +12,7 @@ class Gallery extends Component {
       items: [],
       itemsLoaded: false,
     };
+    this.removeItem = this.removeItem.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -53,11 +54,17 @@ class Gallery extends Component {
     return userNetwork;
   }
 
+  removeItem(itemIdx) {
+    const updatedItems = this.state.items.slice();
+    updatedItems.splice(itemIdx, 1);
+    this.setState({ items: updatedItems });
+  }
+
   render() {
     const { items, itemsLoaded } = this.state;
 
-    const galleryItems = items.map(item =>
-      <GalleryItem key={item.id} item={item} />,
+    const galleryItems = items.map((item, idx) =>
+      <GalleryItem key={item.id} item={item} onRemove={() => this.removeItem(idx)} />,
     );
 
     return (

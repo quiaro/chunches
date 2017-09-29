@@ -14,9 +14,9 @@ const Styled = styled.div`
   }
 `
 
-const GalleryItemMain = ({ className }) => (
+const GalleryItemMain = ({ className, children }) => (
   <Styled className={className}>
-    <em>Me sirve</em>
+    {children}
   </Styled>
 )
 
