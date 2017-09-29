@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { gql, graphql, compose, withApollo } from 'react-apollo';
-import ItemGallery from './styled/ItemGallery';
+import GalleryGrid from './styled/GalleryGrid';
+import GalleryItem from './styled/GalleryItem';
 import ErrorHandler from '../common/ErrorHandler';
 
 class Gallery extends Component {
-
   constructor(props) {
     super(props);
 
@@ -23,16 +23,20 @@ class Gallery extends Component {
       // Save the IDs of all users that have trade relationships with the user
       const userNetwork = this.getUserNetwork(uid, data.allTradeRequests);
 
-      this.props.client.query({
-        query: ALL_NETWORK_ITEMS_QUERY,
-        variables: {
-          network: Array.from(userNetwork),
-        },
-      }).then(res => this.setState({
-        items: res.data.allItems,
-        itemsLoaded: true,
-      }))
-      .catch(e => ErrorHandler(e));
+      this.props.client
+        .query({
+          query: ALL_NETWORK_ITEMS_QUERY,
+          variables: {
+            network: Array.from(userNetwork),
+          },
+        })
+        .then(res =>
+          this.setState({
+            items: res.data.allItems,
+            itemsLoaded: true,
+          }),
+        )
+        .catch(e => ErrorHandler(e));
     }
   }
 
@@ -52,45 +56,24 @@ class Gallery extends Component {
   render() {
     const { items, itemsLoaded } = this.state;
 
-    const DOMItems = items.map(item =>
-      (
-        <div className="item mb4" key={item.id}>
-          <a className="db center tc black link dim" href="#">
-            <img
-              className="ba b--black-10"
-              alt={item.title}
-              src={`https://images.graph.cool/v1/cj7gdhdwb02te01141lbxk8vo/${item
-                .image.secret}/200x`}
-              width="200"
-              height="200"
-            />
-
-            <b className="db mt2 f6 lh-copy">
-              {item.title}
-            </b>
-          </a>
-          <button className="f6 link dim ba ph3 pv2 mb2 mt2 db white bg-dark-blue">
-            Me sirve
-          </button>
-        </div>
-      )
+    const galleryItems = items.map(item =>
+      <GalleryItem key={item.id} item={item} />,
     );
 
     return (
-      <ItemGallery className="pt4">
-        { !itemsLoaded
-            ? <div>Loading items ...</div>
-            : !items.length
-              ? <div>There are currently no items</div>
-              : DOMItems
-         }
-      </ItemGallery>
+      <GalleryGrid className="pt4">
+        {!itemsLoaded
+          ? <div>Loading items ...</div>
+          : !items.length
+            ? <div>There are currently no items</div>
+            : galleryItems}
+      </GalleryGrid>
     );
   }
 }
 
 const ALL_ACCEPTED_TRADE_REQUESTS_QUERY = gql`
-  query ($uid: ID!) {
+  query($uid: ID!) {
     allTradeRequests(
       filter: {
         AND: [
@@ -111,7 +94,7 @@ const ALL_ACCEPTED_TRADE_REQUESTS_QUERY = gql`
 `;
 
 const ALL_NETWORK_ITEMS_QUERY = gql`
-  query ($network: [ID!]) {
+  query($network: [ID!]) {
     allItems(filter: { owner: { id_in: $network } }) {
       id
       createdAt
@@ -131,7 +114,6 @@ const ALL_NETWORK_ITEMS_QUERY = gql`
   }
 `;
 
-export default compose(
-  graphql(ALL_ACCEPTED_TRADE_REQUESTS_QUERY),
-  withApollo
-)(Gallery);
+export default compose(graphql(ALL_ACCEPTED_TRADE_REQUESTS_QUERY), withApollo)(
+  Gallery,
+);
