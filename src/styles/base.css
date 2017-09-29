@@ -1,4 +1,13 @@
+p {
+  margin: 0;
+}
+
 button {
   background-color: transparent;
   border: 0 none;
+  padding: 0;
+}
+
+button:focus, button:active {
+  outline: 0 none;
 }

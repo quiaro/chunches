@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { gql, graphql, compose, withApollo } from 'react-apollo';
 import GalleryGrid from './styled/GalleryGrid';
-import GalleryItem from './styled/GalleryItem';
+import GalleryItem from './GalleryItem';
 import ErrorHandler from '../common/ErrorHandler';
 
 class Gallery extends Component {
