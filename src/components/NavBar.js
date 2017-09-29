@@ -1,15 +1,24 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import StyledNavBar from './styled/NavBar';
+import styled from 'styled-components';
 import NavIconLink from './styled/NavIconLink';
 import NavButton from './styled/NavButton';
 import NavLinks from './NavLinks';
 import { login, logout, isLoggedIn } from '../common/AuthService';
 
+const Styled = styled.div`
+  height: ${props => props.theme.nav_height};
+  background-color: ${props => props.theme.nav_bar};
+
+  > div {
+    display: inline-flex;
+  }
+`
+
 class NavBar extends Component {
   render() {
     return (
-      <StyledNavBar className="flex justify-between nowrap shadow-2">
+      <Styled className="flex justify-between nowrap shadow-2">
 
         <NavLinks />
 
@@ -34,7 +43,7 @@ class NavBar extends Component {
           : <div>
               <NavButton className="ph3" onClick={() => login()}>Entrar</NavButton>
             </div>}
-      </StyledNavBar>
+      </Styled>
     );
   }
 }
