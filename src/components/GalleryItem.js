@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { gql, graphql } from 'react-apollo'
 import classNames from 'classnames';
 import styled from 'styled-components';
 import GalleryItemMain from './styled/GalleryItemMain';
 import GalleryItemCTA from './styled/GalleryItemCTA';
+import ErrorHandler from '../common/ErrorHandler';
 
 const StyledGalleryItem = styled.button`
   position: relative;
@@ -50,12 +52,19 @@ class GalleryItem extends Component {
     this.updateState = this.updateState.bind(this);
   }
 
-  updateState() {
+  updateState(itemId) {
     if (!this.state.requested) {
-      // TODO: send request to server
-      this.setState({ requested: true });
+      const variables = {
+        requesterId: this.props.uid,
+        itemId: itemId,
+      };
+      this.props
+        .createItemRequest({ variables })
+        .then(() => this.setState({ requested: true }))
+        .catch(e => ErrorHandler(e));
     } else {
-      // Item has already been requested, next step is to remove it
+      // Item has already been requested, next step is to remove the
+      // confirmation message
       this.props.onRemove();
     }
   }
@@ -65,15 +74,20 @@ class GalleryItem extends Component {
     const { requested, hidden } = this.state;
     const classes = classNames('db center tc', this.props.className, {
       requested: requested,
-      hidden: hidden
+      hidden: hidden,
     });
 
     return (
-      <StyledGalleryItem className={classes} onClick={this.updateState}>
+      <StyledGalleryItem
+        className={classes}
+        onClick={() => this.updateState(item.id)}
+      >
         {requested
           ? <div className="confirm">
-              <p>A message has been sent to the owner to confirm availability.
-              We'll get back in touch with you shortly.</p>
+              <p>
+                A message has been sent to the owner to confirm availability.
+                We'll get back in touch with you shortly.
+              </p>
               <GalleryItemCTA>
                 <em>OK</em>
               </GalleryItemCTA>
@@ -89,4 +103,18 @@ class GalleryItem extends Component {
   }
 }
 
-export default GalleryItem;
+const CREATE_ITEM_REQUEST_MUTATION = gql`
+  mutation ($requesterId: ID!, $itemId: ID!) {
+    createItemRequest(
+      requesterId: $requesterId
+      itemId: $itemId
+      status: PENDING
+    ) {
+      id
+    }
+  }
+`;
+
+export default graphql(CREATE_ITEM_REQUEST_MUTATION, {
+  name: 'createItemRequest',
+})(GalleryItem);

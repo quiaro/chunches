@@ -1,5 +1,5 @@
 # project: cj7gdhdwb02te01141lbxk8vo
-# version: 25
+# version: 27
 
 type File implements Node {
   contentType: String!
@@ -24,6 +24,7 @@ type User implements Node {
   updatedAt: DateTime!
   items: [Item!]! @relation(name: "UserItems")
   pursued: [TradeRequest!]! @relation(name: "UserPursued")
+  requests: [ItemRequest!]! @relation(name: "RequestsOnUser")
   auth0UserId: String @isUnique
 }
 
@@ -51,6 +52,13 @@ enum TradeRequestStatus {
   REJECTED
 }
 
+enum ItemRequestStatus {
+  PENDING
+  DENIED
+  ACCEPTED
+  FULFILLED
+}
+
 enum ItemStatus {
   FREE
   SHARE
@@ -65,6 +73,16 @@ type Item implements Node {
   status: ItemStatus
   updatedAt: DateTime!
   image: File @relation(name: "ItemImage")
+  requests: [ItemRequest!]! @relation(name: "RequestsOnItem")
+}
+
+type ItemRequest implements Node {
+  id: ID! @isUnique
+  requester: User! @relation(name: "RequestsOnUser")
+  item: Item! @relation(name: "RequestsOnItem")
+  status: ItemRequestStatus
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Tag implements Node {

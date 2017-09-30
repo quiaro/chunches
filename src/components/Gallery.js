@@ -61,10 +61,16 @@ class Gallery extends Component {
   }
 
   render() {
+    const { uid } = this.props;
     const { items, itemsLoaded } = this.state;
 
     const galleryItems = items.map((item, idx) =>
-      <GalleryItem key={item.id} item={item} onRemove={() => this.removeItem(idx)} />,
+      <GalleryItem
+        key={item.id}
+        item={item}
+        uid={uid}
+        onRemove={() => this.removeItem(idx)}
+      />,
     );
 
     return (
