@@ -3,8 +3,6 @@ import HomePrivate from './HomePrivate'
 import OfferedItems from './OfferedItems'
 import OwnedItems from './OwnedItems'
 import MyNetwork from './Network'
-import Profile from './Profile'
-import Messages from './Messages'
 import LoginCallback from './LoginCallback'
 import NotFoundPage from './NotFoundPage'
 
@@ -39,18 +37,6 @@ const routes = [
     name: 'network',
     exact: true,
     component: MyNetwork,
-  },
-  {
-    path: '/profile',
-    name: 'profile',
-    exact: true,
-    component: Profile,
-  },
-  {
-    path: '/messages',
-    name: 'messages',
-    exact: true,
-    component: Messages,
   },
   {
     path: '/callback',

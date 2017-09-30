@@ -1,7 +1,6 @@
 import styled from 'styled-components'
-import { NavLink } from 'react-router-dom'
 
-const NavIconLink = styled(NavLink)`
+const NavIconLink = styled.button`
   .material-icons {
     font-size: 26px;
     color: ${props => props.theme.nav_link_text};
