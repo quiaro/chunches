@@ -10,11 +10,16 @@ const Styled = styled.div`
     height: ${props => props.theme.nav_height};
     line-height: ${props => props.theme.nav_height};
     color: ${props => props.theme.nav_link_text};
-  }
 
-  a .logo {
-    font-size: 38px;
-    vertical-align: middle;
+    &.selected {
+      background-color: ${props => props.theme.nav_link_selected_background};
+      color: ${props => props.theme.nav_link_selected_text};
+    }
+
+    .logo {
+      font-size: 38px;
+      vertical-align: middle;
+    }
   }
 `
 

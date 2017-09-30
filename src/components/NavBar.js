@@ -26,13 +26,13 @@ class NavBar extends Component {
           ? <div>
               <NavIconLink
                 to="/messages"
-                className="dib pa3 no-underline white"
+                className="dib pa3 no-underline"
               >
                 <i className="material-icons">notifications</i>
               </NavIconLink>
               <NavIconLink
                 to="/profile"
-                className="br4 dib ml2 mv3 mr4 no-underline bg-white mid-gray"
+                className="dib pa3 no-underline mid-gray"
               >
                 <i className="material-icons">person</i>
               </NavIconLink>

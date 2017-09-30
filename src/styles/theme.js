@@ -5,4 +5,6 @@ export const theme = {
   nav_bar: 'hsl(50, 100%, 47%)',
   nav_height: '54px',
   nav_link_text: 'white',
+  nav_link_selected_text: 'orange',
+  nav_link_selected_background: 'white',
 }
