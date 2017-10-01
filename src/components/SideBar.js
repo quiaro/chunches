@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import classNames from 'classnames';
 import styled from 'styled-components';
+import Messages from './Messages';
+import Profile from './Profile';
+import { VIEW_NOTIFICATIONS, VIEW_PROFILE } from '../common/constants';
 
 const Styled = styled.div`
   position: absolute;
@@ -56,6 +59,7 @@ class SideBar extends Component {
   }
 
   render() {
+    const { view } = this.state;
     const classes = classNames(this.props.className, {
       hidden: !this.state.isVisible
     });
@@ -63,6 +67,8 @@ class SideBar extends Component {
     return (
       <Styled className={classes}>
         <span>This is the side bar</span>
+        { (view === VIEW_NOTIFICATIONS) && <Messages /> }
+        { (view === VIEW_PROFILE) && <Profile /> }
       </Styled>
     );
   }
