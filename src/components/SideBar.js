@@ -26,26 +26,32 @@ class SideBar extends Component {
     };
   }
 
+  componentDidMount() {
+    this.updateState(this.props.location.search);
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.search !== this.props.location.search) {
       // Update the state per the query string view parameter
-      const searchQuery = new URLSearchParams(nextProps.location.search);
-      const currentView = searchQuery.get('sidebar');
+      this.updateState(nextProps.location.search);
+    }
+  }
 
-      console.log('currentView: ', currentView);  // eslint-disable-line
+  updateState(queryString) {
+    const searchQuery = new URLSearchParams(queryString);
+    const currentView = searchQuery.get('sidebar');
 
-      if (currentView === null) {
-        // Close the submenu
-        this.setState({
-          isVisible: false,
-          view: null,
-        });
-      } else {
-        this.setState({
-          isVisible: true,
-          view: currentView,
-        });
-      }
+    if (currentView === null) {
+      // Sidebar is closed
+      this.setState({
+        isVisible: false,
+        view: null,
+      });
+    } else {
+      this.setState({
+        isVisible: true,
+        view: currentView,
+      });
     }
   }
 

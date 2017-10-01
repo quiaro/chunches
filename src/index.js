@@ -55,7 +55,7 @@ ReactDOM.render(
               <Route component={Default} />
             </Switch>
           </div>
-          <SideBar />
+          <SideBar className='shadow-1' />
         </AppContainer>
       </ThemeProvider>
     </ApolloProvider>
