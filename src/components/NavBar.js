@@ -4,16 +4,25 @@ import styled from 'styled-components';
 import NavButton from './styled/NavButton';
 import NavLinks from './NavLinks';
 import NavIconLink from './NavIconLink';
-import Messages from './Messages';
-import Profile from './Profile';
+import { VIEW_NOTIFICATIONS, VIEW_PROFILE  } from '../common/constants';
 import { login, logout, isLoggedIn } from '../common/AuthService';
 
 const Styled = styled.div`
+  position: relative;
   height: ${props => props.theme.nav_height};
-  background-color: ${props => props.theme.nav_bar};
+  background-color: ${props => props.theme.navbar};
+  z-index: ${props => props.theme.z_index_navbar};
 
   > div {
     display: inline-flex;
+  }
+
+  .notifications button.notifications,
+  .profile button.profile {
+    background-color: ${props => props.theme.nav_link_selected_background};
+    i {
+      color: ${props => props.theme.nav_link_selected_text};
+    }
   }
 `;
 
@@ -21,44 +30,25 @@ class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSubmenuOpen: false,
-      submenuView: '',
+      sidebarClass: '',
     };
     this.toggleView = this.toggleView.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.location.search !== this.props.location.search) {
-      // Update the state per the query string view parameter
-      const searchQuery = new URLSearchParams(nextProps.location.search);
-      const currentView = searchQuery.get('view');
-
-      if (currentView === null) {
-        // Close the submenu
-        this.setState({
-          isSubmenuOpen: false,
-          submenuView: '',
-        });
-      } else {
-        this.setState({
-          isSubmenuOpen: true,
-          submenuView: currentView,
-        });
-      }
-    }
-  }
-
-  toggleView(view) {
+  // Add, remove or update search query param "sidebar"
+  toggleView(view, viewClass) {
     const { history } = this.props;
 
     // FIXME: URLSearchParams is not supported in Edge
     const searchQuery = new URLSearchParams(history.location.search);
-    const currentView = searchQuery.get('view');
+    const currentView = searchQuery.get('sidebar');
 
     if (view === currentView) {
-      searchQuery.delete('view');
+      searchQuery.delete('sidebar');
+      this.setState({ 'sidebarClass': '' });
     } else {
-      searchQuery.set('view', view);
+      searchQuery.set('sidebar', view);
+      this.setState({ 'sidebarClass': viewClass });
     }
 
     history.push({
@@ -68,21 +58,23 @@ class NavBar extends Component {
   }
 
   render() {
+    const { sidebarClass } = this.state;
+
     return (
       <Styled className="flex justify-between nowrap shadow-2">
         <NavLinks />
 
         {isLoggedIn()
-          ? <div>
+          ? <div className={sidebarClass}>
               <NavIconLink
-                className="dib pa3 no-underline"
-                onClick={e => this.toggleView('notifications')}
+                className="dib pa3 no-underline notifications"
+                onClick={e => this.toggleView(VIEW_NOTIFICATIONS, 'notifications')}
               >
                 <i className="material-icons">notifications</i>
               </NavIconLink>
               <NavIconLink
-                className="dib pa3 no-underline"
-                onClick={e => this.toggleView('profile')}
+                className="dib pa3 no-underline profile"
+                onClick={e => this.toggleView(VIEW_PROFILE, 'profile')}
               >
                 <i className="material-icons">person</i>
               </NavIconLink>

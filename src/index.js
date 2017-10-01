@@ -11,6 +11,7 @@ import routes from './routes';
 import Default from './routes/Default';
 import AppContainer from './components/styled/AppContainer';
 import NavBar from './components/NavBar';
+import SideBar from './components/SideBar';
 import { ID_TOKEN_KEY } from './common/constants';
 import { theme } from './styles/theme';
 import './styles/base.css';
@@ -54,6 +55,7 @@ ReactDOM.render(
               <Route component={Default} />
             </Switch>
           </div>
+          <SideBar />
         </AppContainer>
       </ThemeProvider>
     </ApolloProvider>
