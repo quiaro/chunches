@@ -88,9 +88,8 @@ class NavBar extends Component {
       case VIEW_PROFILE:
         viewClass = 'profile';
         break;
-    }
-    if (viewClass === '') {
-      console.warn(`Sidebar view ${view} does not have a corresponding class`);
+      default:
+        console.warn(`Sidebar view ${view} does not have a corresponding class`);
     }
     return viewClass;
   }
