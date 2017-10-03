@@ -44,14 +44,15 @@ function setIdToken(idToken) { localStorage.setItem(ID_TOKEN_KEY, idToken); }
 function setAccessToken(accessToken) { localStorage.setItem(ACCESS_TOKEN_KEY, accessToken); }
 
 // Helper function that will allow us to extract the access token and the id_token
-export function getAndStoreParameters() {
-  auth.parseHash(window.location.hash, function(err, authResult) {
-    if (err) {
-      return console.log(err);
-    }
+export function getAndStoreUserHashParameters() {
+  return new Promise((resolve, reject) => {
+    auth.parseHash(window.location.hash, function(err, authResult) {
+      if (err) reject(err);
 
-    setIdToken(authResult.idToken);
-    setAccessToken(authResult.accessToken);
+      setIdToken(authResult.idToken);
+      setAccessToken(authResult.accessToken);
+      resolve(authResult);
+    });
   });
 }
 

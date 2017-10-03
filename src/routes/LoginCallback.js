@@ -3,7 +3,8 @@ import { withRouter } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { gql, graphql, compose } from 'react-apollo';
 import {
-  getAndStoreParameters,
+  getAndStoreUserHashParameters,
+  isLoggedIn,
   getIdToken,
   getEmail,
   getName,
@@ -12,14 +13,22 @@ import ErrorHandler from '../common/ErrorHandler';
 import USER_QUERY from '../queries/user';
 
 class Callback extends Component {
-  componentDidMount() {
-    getAndStoreParameters();
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoggedIn: false,
+    };
+  }
+
+  async componentDidMount() {
+    await getAndStoreUserHashParameters();
+    this.setState({ isLoggedIn: isLoggedIn() })
   }
 
   componentWillReceiveProps(nextProps) {
     const { data } = nextProps;
+
     if (!data.loading && !data.user) {
-      // Create user if current user cannot be retrieved from the DB
       this.createUser();
     }
   }
@@ -31,7 +40,8 @@ class Callback extends Component {
       name: getName(),
     };
 
-    this.props.createUser({ variables })
+    this.props
+      .createUser({ variables })
       .then(response => {
         console.log('Response from create user', response);
       })
@@ -39,12 +49,16 @@ class Callback extends Component {
   };
 
   render() {
+    const { isLoggedIn } = this.state;
+    const { data: { user } } = this.props;
 
-    const { data: { loading } } = this.props;
-    if (loading) {
-      return <div>Loading</div>
+    if (isLoggedIn && user) {
+      // Wait to redirect user to app until the user hash values from the auth
+      // service have been stored in local cache and the user information has
+      // been retrieved from the database
+      return <Redirect to="/home" />;
     }
-    return <Redirect to='/home'/>;
+    return <div>Loading</div>;
   }
 }
 
@@ -62,6 +76,15 @@ const CREATE_USER_MUTATION = gql`
 
 export default compose(
   graphql(USER_QUERY, { options: { fetchPolicy: 'network-only' } }),
-  graphql(CREATE_USER_MUTATION, { name: 'createUser' }),
-  withRouter
+  graphql(CREATE_USER_MUTATION, {
+    name: 'createUser',
+    options: props => ({
+      refetchQueries: [
+        {
+          query: USER_QUERY,
+        },
+      ],
+    }),
+  }),
+  withRouter,
 )(Callback);
