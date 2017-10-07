@@ -1,6 +1,6 @@
 import { gql } from 'react-apollo';
 
-const USER_QUERY = gql`
+const CURRENT_USER = gql`
   query {
     user {
       id
@@ -12,8 +12,15 @@ const USER_QUERY = gql`
       pursued {
         id
       }
+      requests {
+        id
+        item {
+          id
+        }
+        status
+      }
     }
   }
 `;
 
-export default USER_QUERY
+export default CURRENT_USER

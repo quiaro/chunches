@@ -16,19 +16,22 @@ class Gallery extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { uid } = this.props;
+    const { id, requests } = this.props.user;
     const { data } = nextProps;
     // After loading all trade requests for the user, get all the items from
     // each person in his/her network
     if (!data.loading && data.allTradeRequests && !data.allItems) {
       // Save the IDs of all users that have trade relationships with the user
-      const userNetwork = this.getUserNetwork(uid, data.allTradeRequests);
+      const userNetwork = this.getUserNetwork(id, data.allTradeRequests);
+      const itemsRequested = requests.filter(request => request.status === "PENDING")
+                                     .map(request => request.item.id);
 
       this.props.client
         .query({
           query: ALL_NETWORK_ITEMS_QUERY,
           variables: {
             network: Array.from(userNetwork),
+            itemsRequested: itemsRequested,
           },
         })
         .then(res =>
@@ -61,14 +64,14 @@ class Gallery extends Component {
   }
 
   render() {
-    const { uid } = this.props;
+    const { id } = this.props.user;
     const { items, itemsLoaded } = this.state;
 
     const galleryItems = items.map((item, idx) =>
       <GalleryItem
         key={item.id}
         item={item}
-        uid={uid}
+        uid={id}
         onRemove={() => this.removeItem(idx)}
       />,
     );
@@ -107,8 +110,15 @@ const ALL_ACCEPTED_TRADE_REQUESTS_QUERY = gql`
 `;
 
 const ALL_NETWORK_ITEMS_QUERY = gql`
-  query($network: [ID!]) {
-    allItems(filter: { owner: { id_in: $network } }) {
+  query($network: [ID!], $itemsRequested: [ID!]) {
+    allItems(
+      filter: {
+        AND: [
+          { id_not_in: $itemsRequested }
+          { owner: { id_in: $network } }
+        ]
+      }
+    ) {
       id
       createdAt
       image {
@@ -127,6 +137,13 @@ const ALL_NETWORK_ITEMS_QUERY = gql`
   }
 `;
 
-export default compose(graphql(ALL_ACCEPTED_TRADE_REQUESTS_QUERY), withApollo)(
-  Gallery,
-);
+export default compose(
+  graphql(ALL_ACCEPTED_TRADE_REQUESTS_QUERY, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+  }),
+  withApollo,
+)(Gallery);

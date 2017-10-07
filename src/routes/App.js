@@ -3,7 +3,7 @@ import { graphql } from 'react-apollo';
 import { Switch } from 'react-router-dom';
 import routes from './index';
 import PrivateRoute from '../components/PrivateRoute';
-import USER_QUERY from '../queries/user';
+import CURRENT_USER from '../queries/user';
 
 const App = props => {
 
@@ -15,4 +15,4 @@ const App = props => {
       </Switch>;
 };
 
-export default graphql(USER_QUERY)(App);
+export default graphql(CURRENT_USER)(App);

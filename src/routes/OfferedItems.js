@@ -8,7 +8,7 @@ const OfferedItems = props => {
   return (
     <div>
       <SearchInput></SearchInput>
-      <Gallery uid={user.id} className='flex nowrap'></Gallery>
+      <Gallery user={user} className='flex nowrap'></Gallery>
     </div>
   )
 }

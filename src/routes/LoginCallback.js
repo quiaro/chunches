@@ -10,7 +10,7 @@ import {
   getName,
 } from '../common/AuthService';
 import ErrorHandler from '../common/ErrorHandler';
-import USER_QUERY from '../queries/user';
+import CURRENT_USER from '../queries/user';
 
 class Callback extends Component {
   constructor(props) {
@@ -75,13 +75,13 @@ const CREATE_USER_MUTATION = gql`
 `;
 
 export default compose(
-  graphql(USER_QUERY, { options: { fetchPolicy: 'network-only' } }),
+  graphql(CURRENT_USER, { options: { fetchPolicy: 'network-only' } }),
   graphql(CREATE_USER_MUTATION, {
     name: 'createUser',
     options: props => ({
       refetchQueries: [
         {
-          query: USER_QUERY,
+          query: CURRENT_USER,
         },
       ],
     }),
