@@ -1,5 +1,5 @@
 # project: cj7gdhdwb02te01141lbxk8vo
-# version: 27
+# version: 29
 
 type File implements Node {
   contentType: String!
@@ -25,6 +25,8 @@ type User implements Node {
   items: [Item!]! @relation(name: "UserItems")
   pursued: [TradeRequest!]! @relation(name: "UserPursued")
   requests: [ItemRequest!]! @relation(name: "RequestsOnUser")
+  inbox: [Message!]! @relation(name: "MessagesReceived")
+  outbox: [Message!]! @relation(name: "MessagesSent")
   auth0UserId: String @isUnique
 }
 
@@ -89,6 +91,16 @@ type Tag implements Node {
   id: ID! @isUnique
   key: String!
   items: [Item!]! @relation(name: "ItemTags")
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Message implements Node {
+  id: ID! @isUnique
+  sender: User! @relation(name: "MessagesSent")
+  receiver: User! @relation(name: "MessagesReceived")
+  message: String!
+  viewed: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
