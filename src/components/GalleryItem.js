@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { gql, graphql } from 'react-apollo'
+import { gql, graphql } from 'react-apollo';
 import classNames from 'classnames';
 import styled from 'styled-components';
 import GalleryItemMain from './styled/GalleryItemMain';
@@ -52,11 +52,11 @@ class GalleryItem extends Component {
     this.updateState = this.updateState.bind(this);
   }
 
-  updateState(itemId) {
+  updateState(item) {
     if (!this.state.requested) {
       const variables = {
-        requesterId: this.props.uid,
-        itemId: itemId,
+        requesterId: this.props.user.id,
+        itemId: item.id,
       };
       this.props
         .createItemRequest({ variables })
@@ -80,7 +80,7 @@ class GalleryItem extends Component {
     return (
       <StyledGalleryItem
         className={classes}
-        onClick={() => this.updateState(item.id)}
+        onClick={() => this.updateState(item)}
       >
         {requested
           ? <div className="confirm">
@@ -104,7 +104,7 @@ class GalleryItem extends Component {
 }
 
 const CREATE_ITEM_REQUEST_MUTATION = gql`
-  mutation ($requesterId: ID!, $itemId: ID!) {
+  mutation($requesterId: ID!, $itemId: ID!) {
     createItemRequest(
       requesterId: $requesterId
       itemId: $itemId

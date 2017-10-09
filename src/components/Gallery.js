@@ -64,14 +64,14 @@ class Gallery extends Component {
   }
 
   render() {
-    const { id } = this.props.user;
+    const { user } = this.props;
     const { items, itemsLoaded } = this.state;
 
     const galleryItems = items.map((item, idx) =>
       <GalleryItem
         key={item.id}
         item={item}
-        uid={id}
+        user={user}
         onRemove={() => this.removeItem(idx)}
       />,
     );

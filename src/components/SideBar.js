@@ -66,7 +66,6 @@ class SideBar extends Component {
 
     return (
       <Styled className={classes}>
-        <span>This is the side bar</span>
         { (view === VIEW_NOTIFICATIONS) && <Messages /> }
         { (view === VIEW_PROFILE) && <Profile /> }
       </Styled>

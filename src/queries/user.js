@@ -12,6 +12,24 @@ const CURRENT_USER = gql`
       pursued {
         id
       }
+      items {
+        # Requests made by others for items owned by the current user
+        requests {
+          id
+          createdAt
+          item {
+            title
+            image {
+              secret
+            }
+          }
+          requester {
+            name
+          }
+          status
+        }
+      }
+      # Requests for items made by the user
       requests {
         id
         item {
