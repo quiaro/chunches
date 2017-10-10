@@ -3,10 +3,11 @@ import { withRouter } from 'react-router';
 import styled from 'styled-components';
 import NavBar from './styled/NavBar';
 import NavButton from './styled/NavButton';
+import NavBarMessages from './NavBarMessages';
 import NavLinks from './NavLinks';
 import NavIconLink from './NavIconLink';
 import { VIEW_NOTIFICATIONS, VIEW_PROFILE } from '../common/constants';
-import { logout, isLoggedIn } from '../common/AuthService';
+import { logout } from '../common/AuthService';
 
 const SideBarLinks = styled.div`
   &.notifications button.notifications,
@@ -94,6 +95,7 @@ class NavBarPrivate extends Component {
   }
 
   render() {
+    const { user } = this.props;
     const { activeLinkClass } = this.state;
 
     return (
@@ -101,12 +103,11 @@ class NavBarPrivate extends Component {
         <NavLinks />
 
         <SideBarLinks className={activeLinkClass}>
-          <NavIconLink
+          <NavBarMessages
+            user={user}
             className="dib pa3 no-underline notifications"
-            onClick={e => this.toggleActiveLink(VIEW_NOTIFICATIONS)}
-          >
-            <i className="material-icons">notifications</i>
-          </NavIconLink>
+            onToggle={() => this.toggleActiveLink(VIEW_NOTIFICATIONS)}
+          />
           <NavIconLink
             className="dib pa3 no-underline profile"
             onClick={e => this.toggleActiveLink(VIEW_PROFILE)}

@@ -10,7 +10,7 @@ const App = props => {
   return props.data.loading
     ? <div>Loading</div>
     : <div>
-        <NavBarPrivate />
+        <NavBarPrivate user={props.data.user} />
         <Switch>
           {routes
             .filter(route => !route.public)

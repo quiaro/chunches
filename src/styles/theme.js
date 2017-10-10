@@ -1,5 +1,7 @@
 export const theme = {
   background: 'rgba(255, 213, 1, 0.08)',
+  badge_background: 'red',
+  badge_text: 'white',
   button_background: 'orange',
   button_text: 'white',
   navbar: 'hsl(50, 100%, 47%)',

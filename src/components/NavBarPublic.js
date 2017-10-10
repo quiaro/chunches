@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import NavLinks from './NavLinks';
 import NavBar from './styled/NavBar';
 import NavButton from './styled/NavButton';
