@@ -1,5 +1,7 @@
 :root {
   overflow-x: hidden;
+  background-color: rgba(255, 213, 1, 0.08);
+  font-family: Arial, Geneva, sans-serif;
 }
 
 p {

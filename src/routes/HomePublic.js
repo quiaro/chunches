@@ -1,9 +1,12 @@
-import React from 'react'
+import React from 'react';
+import PublicNavBar from '../components/PublicNavBar';
 
-const HomePublic = () => (
-  <main>
-    <h1>Be kind, give away, help others.</h1>
-  </main>
-)
+const HomePublic = () =>
+  <div>
+    <PublicNavBar />
+    <main>
+      <h1>Be kind, give away, help others.</h1>
+    </main>
+  </div>;
 
-export default HomePublic
+export default HomePublic;

@@ -9,8 +9,6 @@ import {
 } from 'react-apollo';
 import routes from './routes';
 import Default from './routes/Default';
-import AppContainer from './components/styled/AppContainer';
-import NavBar from './components/NavBar';
 import SideBar from './components/SideBar';
 import { ID_TOKEN_KEY } from './common/constants';
 import { theme } from './styles/theme';
@@ -45,18 +43,15 @@ ReactDOM.render(
   <Router>
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
-        <AppContainer className="center">
-          <NavBar />
-          <div className="pa3">
-            <Switch>
-              {/* Public routes */}
-              {routes.filter(route => route.public)
-                     .map(route => <Route key={`route-${route.name}`} {...route} />) }
-              <Route component={Default} />
-            </Switch>
-          </div>
+        <div>
+          <Switch>
+            {/* Public routes */}
+            {routes.filter(route => route.public)
+                   .map(route => <Route key={`route-${route.name}`} {...route} />) }
+            <Route component={Default} />
+          </Switch>
           <SideBar className='shadow-1' />
-        </AppContainer>
+        </div>
       </ThemeProvider>
     </ApolloProvider>
   </Router>,

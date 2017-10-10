@@ -1,24 +1,16 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import styled from 'styled-components';
+import NavBar from './styled/NavBar';
 import NavButton from './styled/NavButton';
 import NavLinks from './NavLinks';
 import NavIconLink from './NavIconLink';
 import { VIEW_NOTIFICATIONS, VIEW_PROFILE } from '../common/constants';
-import { login, logout, isLoggedIn } from '../common/AuthService';
+import { logout, isLoggedIn } from '../common/AuthService';
 
-const Styled = styled.div`
-  position: relative;
-  height: ${props => props.theme.nav_height};
-  background-color: ${props => props.theme.navbar};
-  z-index: ${props => props.theme.z_index_navbar};
-
-  > div {
-    display: inline-flex;
-  }
-
-  .notifications button.notifications,
-  .profile button.profile {
+const SideBarLinks = styled.div`
+  &.notifications button.notifications,
+  &.profile button.profile {
     background-color: ${props => props.theme.nav_link_selected_background};
     i {
       color: ${props => props.theme.nav_link_selected_text};
@@ -26,7 +18,7 @@ const Styled = styled.div`
   }
 `;
 
-class NavBar extends Component {
+class PrivateNavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -89,7 +81,9 @@ class NavBar extends Component {
         viewClass = 'profile';
         break;
       default:
-        console.warn(`Sidebar view ${view} does not have a corresponding class`);
+        console.warn(
+          `Sidebar view ${view} does not have a corresponding class`,
+        );
     }
     return viewClass;
   }
@@ -103,38 +97,29 @@ class NavBar extends Component {
     const { activeLinkClass } = this.state;
 
     return (
-      <Styled className="flex justify-between nowrap shadow-2">
+      <NavBar className="flex justify-between nowrap shadow-2">
         <NavLinks />
 
-        {isLoggedIn()
-          ? <div className={activeLinkClass}>
-              <NavIconLink
-                className="dib pa3 no-underline notifications"
-                onClick={e => this.toggleActiveLink(VIEW_NOTIFICATIONS)}
-              >
-                <i className="material-icons">notifications</i>
-              </NavIconLink>
-              <NavIconLink
-                className="dib pa3 no-underline profile"
-                onClick={e => this.toggleActiveLink(VIEW_PROFILE)}
-              >
-                <i className="material-icons">person</i>
-              </NavIconLink>
-              <NavButton
-                className="ph3"
-                onClick={() => logout(this.props.history)}
-              >
-                Salir
-              </NavButton>
-            </div>
-          : <div>
-              <NavButton className="ph3" onClick={() => login()}>
-                Entrar
-              </NavButton>
-            </div>}
-      </Styled>
+        <SideBarLinks className={activeLinkClass}>
+          <NavIconLink
+            className="dib pa3 no-underline notifications"
+            onClick={e => this.toggleActiveLink(VIEW_NOTIFICATIONS)}
+          >
+            <i className="material-icons">notifications</i>
+          </NavIconLink>
+          <NavIconLink
+            className="dib pa3 no-underline profile"
+            onClick={e => this.toggleActiveLink(VIEW_PROFILE)}
+          >
+            <i className="material-icons">person</i>
+          </NavIconLink>
+          <NavButton className="ph3" onClick={() => logout(this.props.history)}>
+            Salir
+          </NavButton>
+        </SideBarLinks>
+      </NavBar>
     );
   }
 }
 
-export default withRouter(NavBar);
+export default withRouter(PrivateNavBar);
