@@ -26,7 +26,7 @@ const Styled = styled.div`
 export default () => (
   <Styled>
     <NavLink
-      to="/home"
+      to="/"
       className="dib ph4 no-underline white"
     >
       {/* TODO: replace with real logo icon */}
