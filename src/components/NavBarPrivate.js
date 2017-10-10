@@ -18,7 +18,7 @@ const SideBarLinks = styled.div`
   }
 `;
 
-class PrivateNavBar extends Component {
+class NavBarPrivate extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -122,4 +122,4 @@ class PrivateNavBar extends Component {
   }
 }
 
-export default withRouter(PrivateNavBar);
+export default withRouter(NavBarPrivate);

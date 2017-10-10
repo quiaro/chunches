@@ -4,7 +4,7 @@ import NavBar from './styled/NavBar';
 import NavButton from './styled/NavButton';
 import { login } from '../common/AuthService';
 
-const PublicNavBar = () =>
+const NavBarPublic = () =>
   <NavBar className="flex justify-between nowrap shadow-2">
     <NavLinks />
     <div>
@@ -14,4 +14,4 @@ const PublicNavBar = () =>
     </div>
   </NavBar>;
 
-export default PublicNavBar;
+export default NavBarPublic;

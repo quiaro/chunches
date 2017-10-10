@@ -2,7 +2,7 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import { Switch } from 'react-router-dom';
 import routes from './index';
-import PrivateNavBar from '../components/PrivateNavBar';
+import NavBarPrivate from '../components/NavBarPrivate';
 import PrivateRoute from '../components/PrivateRoute';
 import CURRENT_USER from '../queries/user';
 
@@ -10,7 +10,7 @@ const App = props => {
   return props.data.loading
     ? <div>Loading</div>
     : <div>
-        <PrivateNavBar />
+        <NavBarPrivate />
         <Switch>
           {routes
             .filter(route => !route.public)

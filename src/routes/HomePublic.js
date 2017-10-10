@@ -1,9 +1,9 @@
 import React from 'react';
-import PublicNavBar from '../components/PublicNavBar';
+import NavBarPublic from '../components/NavBarPublic';
 
 const HomePublic = () =>
   <div>
-    <PublicNavBar />
+    <NavBarPublic />
     <main>
       <h1>Be kind, give away, help others.</h1>
     </main>
