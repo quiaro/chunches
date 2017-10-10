@@ -1,6 +1,6 @@
 import React from 'react'
 import GetStarted from '../components/GetStarted'
-import TradeRequestNotifications from '../components/TradeRequestNotifications'
+import PendingTradeRequests from '../components/PendingTradeRequests'
 import TradeRequestForm from '../containers/TradeRequestForm'
 import GiveAwayForm from '../containers/GiveAwayForm'
 
@@ -11,7 +11,7 @@ const HomePrivate = (props) => {
     props.data.loading
       ? <div>Loading</div>
       : <div>
-          <TradeRequestNotifications uid={user.id}></TradeRequestNotifications>
+          <PendingTradeRequests uid={user.id}></PendingTradeRequests>
           <h1>Welcome to the app!</h1>
 
           <GetStarted tradeRequestsSent={user.pursuer.length}></GetStarted>

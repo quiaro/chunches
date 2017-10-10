@@ -1,5 +1,6 @@
 import React from 'react';
+import PendingTradeRequests from '../components/PendingTradeRequests'
 
-export default () => (
-  <div>Mi Red</div>
+export default (props) => (
+  <PendingTradeRequests uid={props.data.user.id}></PendingTradeRequests>
 )

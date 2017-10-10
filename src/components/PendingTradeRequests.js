@@ -1,7 +1,7 @@
 import React from 'react';
 import { gql, graphql, compose } from 'react-apollo';
 
-const TradeRequestNotifications = (props) => {
+const PendingTradeRequests = (props) => {
   const { pendingTradeRequests, updateTradeRequest } = props;
 
   return (
@@ -79,4 +79,4 @@ export default compose(
       ]
     }),
   }),
-)(TradeRequestNotifications);
+)(PendingTradeRequests);
