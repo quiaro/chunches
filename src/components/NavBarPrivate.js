@@ -95,7 +95,6 @@ class NavBarPrivate extends Component {
   }
 
   render() {
-    const { user } = this.props;
     const { activeLinkClass } = this.state;
 
     return (
@@ -104,9 +103,9 @@ class NavBarPrivate extends Component {
 
         <SideBarLinks className={activeLinkClass}>
           <NavBarMessages
-            user={user}
             className="dib pa3 no-underline notifications"
-            onToggle={() => this.toggleActiveLink(VIEW_NOTIFICATIONS)}
+            onClick={() => this.toggleActiveLink(VIEW_NOTIFICATIONS)}
+            isOpen={ activeLinkClass === VIEW_NOTIFICATIONS }
           />
           <NavIconLink
             className="dib pa3 no-underline profile"

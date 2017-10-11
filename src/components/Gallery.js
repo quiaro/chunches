@@ -16,15 +16,16 @@ class Gallery extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { id, requests } = this.props.user;
+    const { id, outgoingRequests } = this.props.user;
     const { data } = nextProps;
     // After loading all trade requests for the user, get all the items from
     // each person in his/her network
     if (!data.loading && data.allTradeRequests && !data.allItems) {
       // Save the IDs of all users that have trade relationships with the user
       const userNetwork = this.getUserNetwork(id, data.allTradeRequests);
-      const itemsRequested = requests.filter(request => request.status === "PENDING")
-                                     .map(request => request.item.id);
+      const itemsRequested = outgoingRequests
+        .filter(request => request.status === 'PENDING')
+        .map(request => request.item.id);
 
       this.props.client
         .query({
@@ -113,10 +114,7 @@ const ALL_NETWORK_ITEMS_QUERY = gql`
   query($network: [ID!], $itemsRequested: [ID!]) {
     allItems(
       filter: {
-        AND: [
-          { id_not_in: $itemsRequested }
-          { owner: { id_in: $network } }
-        ]
+        AND: [{ id_not_in: $itemsRequested }, { owner: { id_in: $network } }]
       }
     ) {
       id

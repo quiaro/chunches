@@ -7,20 +7,23 @@ import CURRENT_USER from '../queries/user';
 const Styled = styled.div`margin: 30px;`;
 
 const itemRequestAccept = itemRequestId => {
-  console.log('ACCEPTED: ', itemRequestId);  // eslint-disable-line
+  console.log('ACCEPTED: ', itemRequestId); // eslint-disable-line
 };
 
 const itemRequestReject = itemRequestId => {
-  console.log('REJECTED: ', itemRequestId);  // eslint-disable-line
+  console.log('REJECTED: ', itemRequestId); // eslint-disable-line
 };
 
 const Messages = props => {
-  if (props.data.loading) return null;
+  const { loading, user } = props.data;
+  if (loading) return null;
 
-  const itemRequests = props.data.user.items
-    .filter(item => item.requests.length > 0)
-    .map(item => item.requests)
-    .reduce((a, b) => a.concat(b), [])
+  const itemRequests = user.incomingRequests
+    .filter(
+      itemRequest =>
+        itemRequest.status === 'PENDING' ||
+        itemRequest.status === 'PENDING_ACK',
+    )
     .map(itemRequest =>
       <ItemRequestMessage
         key={itemRequest.id}
@@ -30,11 +33,11 @@ const Messages = props => {
       />,
     );
 
-  return (
-    <Styled>
-      {itemRequests}
-    </Styled>
-  );
+  return itemRequests.length > 0
+    ? <Styled>
+        {itemRequests}
+      </Styled>
+    : <p>There are no messages</p>;
 };
 
 export default graphql(CURRENT_USER)(Messages);

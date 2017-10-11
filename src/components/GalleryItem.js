@@ -56,6 +56,7 @@ class GalleryItem extends Component {
     if (!this.state.requested) {
       const variables = {
         requesterId: this.props.user.id,
+        ownerId: item.owner.id,
         itemId: item.id,
       };
       this.props
@@ -104,9 +105,10 @@ class GalleryItem extends Component {
 }
 
 const CREATE_ITEM_REQUEST_MUTATION = gql`
-  mutation($requesterId: ID!, $itemId: ID!) {
+  mutation($requesterId: ID!, $itemId: ID!, $ownerId: ID!) {
     createItemRequest(
       requesterId: $requesterId
+      ownerId: $ownerId
       itemId: $itemId
       status: PENDING
     ) {

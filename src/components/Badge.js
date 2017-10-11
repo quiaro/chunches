@@ -15,9 +15,12 @@ const Styled = styled.span`
   text-align: center;
 `;
 
-const Badge = ({ number }) =>
-  <Styled>
-    {number}
-  </Styled>;
+const Badge = ({ number }) => {
+  return number
+    ? <Styled>
+        {number}
+      </Styled>
+    : null;
+};
 
 export default Badge;

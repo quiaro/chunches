@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { gql, graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
 import Badge from './Badge';
+import CURRENT_USER from '../queries/user';
 
 const Styled = styled.button`
   position: relative;
@@ -11,19 +13,67 @@ const Styled = styled.button`
   }
 `;
 
-const NavBarMessages = ({ user, className, onToggle }) => {
-  const itemRequests = user.items
-    .filter(item => item.requests.length > 0)
-    .map(item => item.requests)
-    .reduce((a, b) => a.concat(b), []) // concat all item requests together
-    .filter(itemRequest => itemRequest.status === 'PENDING');
+class NavBarMessages extends Component {
+  getPendingItemRequests(itemRequests) {
+    return itemRequests.filter(itemRequest => itemRequest.status === 'PENDING')
+  }
 
-  return (
-    <Styled className={ className } onClick={ onToggle }>
-      <Badge number={itemRequests.length} />
-      <i className="material-icons">notifications</i>
-    </Styled>
-  );
-};
+  componentWillReceiveProps(nextProps) {
+    const { loading, user } = nextProps.data;
 
-export default NavBarMessages;
+    if (!loading && user && nextProps.isOpen) {
+      const pendingItemRequests = this.getPendingItemRequests(
+        user.incomingRequests,
+      );
+      if (pendingItemRequests.length > 0) {
+        // Mark pending requests as read
+        const updates = user.incomingRequests.map(itemRequest =>
+          this.props.updateItemRequestStatus({
+            variables: {
+              id: itemRequest.id,
+              status: 'PENDING_ACK',
+            },
+          }),
+        );
+        Promise.all(updates).then(values => {
+          // Refetch current user
+          console.log('Values resolved: ', values);
+          this.props.data.refetch();
+        });
+      }
+    }
+  }
+
+  render() {
+    const { loading, user } = this.props.data;
+
+    if (loading) return null;
+
+    const { className, onClick } = this.props;
+    const pendingItemRequests = this.getPendingItemRequests(
+      user.incomingRequests,
+    );
+
+    return (
+      <Styled className={className} onClick={onClick}>
+        <Badge number={pendingItemRequests.length} />
+        <i className="material-icons">notifications</i>
+      </Styled>
+    );
+  }
+}
+
+const UPDATE_ITEM_REQUEST_STATUS_MUTATION = gql`
+  mutation($id: ID!, $status: ItemRequestStatus!) {
+    updateItemRequest(id: $id, status: $status) {
+      id
+    }
+  }
+`;
+
+export default compose(
+  graphql(CURRENT_USER),
+  graphql(UPDATE_ITEM_REQUEST_STATUS_MUTATION, {
+    name: 'updateItemRequestStatus',
+  }),
+)(NavBarMessages);

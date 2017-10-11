@@ -1,5 +1,5 @@
 # project: cj7gdhdwb02te01141lbxk8vo
-# version: 31
+# version: 35
 
 type File implements Node {
   contentType: String!
@@ -24,8 +24,9 @@ type User implements Node {
   updatedAt: DateTime!
   items: [Item!]! @relation(name: "UserItems")
   pursued: [TradeRequest!]! @relation(name: "UserPursued")
-  requests: [ItemRequest!]! @relation(name: "RequestsOnUser")
+  incomingRequests: [ItemRequest!]! @relation(name: "RequestsOnOwner")
   auth0UserId: String @isUnique
+  outgoingRequests: [ItemRequest!]! @relation(name: "RequestsOnUser")
 }
 
 type Invite implements Node {
@@ -54,8 +55,11 @@ enum TradeRequestStatus {
 
 enum ItemRequestStatus {
   PENDING
+  PENDING_ACK
   DENIED
+  DENIED_ACK
   ACCEPTED
+  ACCEPTED_ACK
 }
 
 enum ItemStatus {
@@ -77,6 +81,7 @@ type Item implements Node {
 
 type ItemRequest implements Node {
   id: ID! @isUnique
+  owner: User! @relation(name: "RequestsOnOwner")
   requester: User! @relation(name: "RequestsOnUser")
   item: Item! @relation(name: "RequestsOnItem")
   status: ItemRequestStatus
