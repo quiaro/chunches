@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { gql, graphql, compose } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
 import Badge from './Badge';
 import CURRENT_USER from '../queries/user';
+import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
 
 const Styled = styled.button`
   position: relative;
@@ -37,7 +38,6 @@ class NavBarMessages extends Component {
         );
         Promise.all(updates).then(values => {
           // Refetch current user
-          console.log('Values resolved: ', values);
           this.props.data.refetch();
         });
       }
@@ -63,17 +63,9 @@ class NavBarMessages extends Component {
   }
 }
 
-const UPDATE_ITEM_REQUEST_STATUS_MUTATION = gql`
-  mutation($id: ID!, $status: ItemRequestStatus!) {
-    updateItemRequest(id: $id, status: $status) {
-      id
-    }
-  }
-`;
-
 export default compose(
   graphql(CURRENT_USER),
-  graphql(UPDATE_ITEM_REQUEST_STATUS_MUTATION, {
+  graphql(UPDATE_ITEM_REQUEST_STATUS, {
     name: 'updateItemRequestStatus',
   }),
 )(NavBarMessages);
