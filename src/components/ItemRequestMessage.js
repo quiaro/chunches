@@ -27,8 +27,8 @@ const ItemRequestMessage = ({ itemRequest, onAccept, onReject, className }) => {
           {message}
         </span>
         <div className="actions">
-          <Button onClick={() => onAccept(itemRequest.id)}>Accept</Button>
-          <Button onClick={() => onReject(itemRequest.id)}>Reject</Button>
+          <Button onClick={ onAccept }>Accept</Button>
+          <Button onClick={ onReject }>Reject</Button>
         </div>
       </div>
       <img

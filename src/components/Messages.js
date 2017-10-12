@@ -1,17 +1,21 @@
 import React from 'react';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
 import ItemRequestMessage from './ItemRequestMessage';
+import ErrorHandler from '../common/ErrorHandler';
 import CURRENT_USER from '../queries/user';
+import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
 
 const Styled = styled.div`margin: 30px;`;
 
-const itemRequestAccept = itemRequestId => {
-  console.log('ACCEPTED: ', itemRequestId); // eslint-disable-line
-};
-
-const itemRequestReject = itemRequestId => {
-  console.log('REJECTED: ', itemRequestId); // eslint-disable-line
+const updateItemRequest = (itemRequestId, status, props) => {
+  props.updateItemRequestStatus({
+    variables: {
+      id: itemRequestId,
+      status: status,
+    },
+  }).then(() => props.data.refetch())
+  .catch(e => ErrorHandler(e));
 };
 
 const Messages = props => {
@@ -28,8 +32,8 @@ const Messages = props => {
       <ItemRequestMessage
         key={itemRequest.id}
         itemRequest={itemRequest}
-        onAccept={itemRequestAccept}
-        onReject={itemRequestReject}
+        onAccept={() => updateItemRequest(itemRequest.id, 'ACCEPTED', props) }
+        onReject={() => updateItemRequest(itemRequest.id, 'DENIED', props) }
       />,
     );
 
@@ -40,4 +44,9 @@ const Messages = props => {
     : <p>There are no messages</p>;
 };
 
-export default graphql(CURRENT_USER)(Messages);
+export default compose(
+  graphql(CURRENT_USER),
+  graphql(UPDATE_ITEM_REQUEST_STATUS, {
+    name: 'updateItemRequestStatus',
+  }),
+)(Messages);
