@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
 import Badge from './Badge';
-import CURRENT_USER from '../queries/user';
+import { ITEM_REQUESTS_PENDING } from '../queries/item_request';
 import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
 
 const Styled = styled.button`
@@ -15,20 +15,25 @@ const Styled = styled.button`
 `;
 
 class NavBarMessages extends Component {
-  getPendingItemRequests(itemRequests) {
-    return itemRequests.filter(itemRequest => itemRequest.status === 'PENDING')
+  getItemRequestsNotViewed(itemRequests) {
+    return itemRequests.filter(itemRequest => itemRequest.status === 'PENDING');
   }
 
   componentWillReceiveProps(nextProps) {
-    const { loading, user } = nextProps.data;
+    const {
+      isOpen,
+      loadingItemRequestsPending,
+      itemRequestsPending,
+    } = nextProps;
 
-    if (!loading && user && nextProps.isOpen) {
-      const pendingItemRequests = this.getPendingItemRequests(
-        user.incomingRequests,
+    if (!loadingItemRequestsPending && isOpen) {
+      const itemRequestsNotViewed = this.getItemRequestsNotViewed(
+        itemRequestsPending,
       );
-      if (pendingItemRequests.length > 0) {
+
+      if (itemRequestsNotViewed.length > 0) {
         // Mark pending requests as read
-        const updates = user.incomingRequests.map(itemRequest =>
+        const updates = itemRequestsNotViewed.map(itemRequest =>
           this.props.updateItemRequestStatus({
             variables: {
               id: itemRequest.id,
@@ -37,26 +42,25 @@ class NavBarMessages extends Component {
           }),
         );
         Promise.all(updates).then(values => {
-          // Refetch current user
-          this.props.data.refetch();
+          this.props.refetchItemRequestsPending();
         });
       }
     }
   }
 
   render() {
-    const { loading, user } = this.props.data;
+    const { loadingItemRequestsPending, itemRequestsPending } = this.props;
 
-    if (loading) return null;
+    if (loadingItemRequestsPending) return null;
 
     const { className, onClick } = this.props;
-    const pendingItemRequests = this.getPendingItemRequests(
-      user.incomingRequests,
+    const itemRequestsNotViewed = this.getItemRequestsNotViewed(
+      itemRequestsPending,
     );
 
     return (
       <Styled className={className} onClick={onClick}>
-        <Badge number={pendingItemRequests.length} />
+        <Badge number={itemRequestsNotViewed.length} />
         <i className="material-icons">notifications</i>
       </Styled>
     );
@@ -64,7 +68,18 @@ class NavBarMessages extends Component {
 }
 
 export default compose(
-  graphql(CURRENT_USER),
+  graphql(ITEM_REQUESTS_PENDING, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+    props: ({ data: { loading, allItemRequests, refetch } }) => ({
+      loadingItemRequestsPending: loading,
+      itemRequestsPending: allItemRequests,
+      refetchItemRequestsPending: refetch,
+    }),
+  }),
   graphql(UPDATE_ITEM_REQUEST_STATUS, {
     name: 'updateItemRequestStatus',
   }),

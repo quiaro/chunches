@@ -12,21 +12,6 @@ const CURRENT_USER = gql`
       pursued {
         id
       }
-      incomingRequests {
-        id
-        requester {
-          id
-          name
-        }
-        item {
-          id
-          title
-          image {
-            secret
-          }
-        }
-        status
-      }
       outgoingRequests {
         id
         item {

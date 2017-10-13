@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
+import { graphql, compose } from 'react-apollo';
 import classNames from 'classnames';
 import styled from 'styled-components';
 import Messages from './Messages';
 import Profile from './Profile';
+import CURRENT_USER from '../queries/user';
 import { VIEW_NOTIFICATIONS, VIEW_PROFILE } from '../common/constants';
 
 const Styled = styled.div`
@@ -60,17 +62,23 @@ class SideBar extends Component {
 
   render() {
     const { view } = this.state;
+    const { loading, user } = this.props.data;
     const classes = classNames(this.props.className, {
       hidden: !this.state.isVisible
     });
 
-    return (
+    if (loading) return null;
+
+    return  (
       <Styled className={classes}>
-        { (view === VIEW_NOTIFICATIONS) && <Messages /> }
-        { (view === VIEW_PROFILE) && <Profile /> }
+        { (view === VIEW_NOTIFICATIONS) && <Messages user={user} /> }
+        { (view === VIEW_PROFILE) && <Profile user={user} /> }
       </Styled>
     );
   }
 }
 
-export default withRouter(SideBar);
+export default compose(
+  graphql(CURRENT_USER),
+  withRouter
+)(SideBar);
