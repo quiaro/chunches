@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
 import Badge from './Badge';
-import { ITEM_REQUESTS_PENDING } from '../queries/item_request';
+import {
+  ITEM_REQUESTS_PENDING,
+  ITEM_REQUESTS_ACCEPTED,
+} from '../queries/item_request';
 import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
 
 const Styled = styled.button`
@@ -15,21 +18,28 @@ const Styled = styled.button`
 `;
 
 class NavBarMessages extends Component {
-  getItemRequestsNotViewed(itemRequests) {
-    return itemRequests.filter(itemRequest => itemRequest.status === 'PENDING');
+  getItemRequestsNotViewed() {
+    const { itemRequestsPending, itemRequestsAccepted } = this.props;
+
+    const pendingNotViewed = itemRequestsPending.filter(
+      itemRequest => itemRequest.status === 'PENDING',
+    );
+    const acceptedNotViewed = itemRequestsAccepted.filter(
+      itemRequest => itemRequest.status === 'ACCEPTED',
+    );
+
+    return [].concat(pendingNotViewed, acceptedNotViewed);
   }
 
   componentWillReceiveProps(nextProps) {
     const {
       isOpen,
       loadingItemRequestsPending,
-      itemRequestsPending,
+      loadingItemRequestsAccepted,
     } = nextProps;
 
-    if (!loadingItemRequestsPending && isOpen) {
-      const itemRequestsNotViewed = this.getItemRequestsNotViewed(
-        itemRequestsPending,
-      );
+    if (!loadingItemRequestsPending && !loadingItemRequestsAccepted && isOpen) {
+      const itemRequestsNotViewed = this.getItemRequestsNotViewed();
 
       if (itemRequestsNotViewed.length > 0) {
         // Mark pending requests as read
@@ -37,26 +47,28 @@ class NavBarMessages extends Component {
           this.props.updateItemRequestStatus({
             variables: {
               id: itemRequest.id,
-              status: 'PENDING_ACK',
+              status: `${itemRequest.status}_ACK`,
             },
           }),
         );
         Promise.all(updates).then(values => {
           this.props.refetchItemRequestsPending();
+          this.props.refetchItemRequestsAccepted();
         });
       }
     }
   }
 
   render() {
-    const { loadingItemRequestsPending, itemRequestsPending } = this.props;
+    const {
+      loadingItemRequestsPending,
+      loadingItemRequestsAccepted,
+    } = this.props;
 
-    if (loadingItemRequestsPending) return null;
+    if (loadingItemRequestsPending || loadingItemRequestsAccepted) return null;
 
     const { className, onClick } = this.props;
-    const itemRequestsNotViewed = this.getItemRequestsNotViewed(
-      itemRequestsPending,
-    );
+    const itemRequestsNotViewed = this.getItemRequestsNotViewed();
 
     return (
       <Styled className={className} onClick={onClick}>
@@ -78,6 +90,18 @@ export default compose(
       loadingItemRequestsPending: loading,
       itemRequestsPending: allItemRequests,
       refetchItemRequestsPending: refetch,
+    }),
+  }),
+  graphql(ITEM_REQUESTS_ACCEPTED, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+    props: ({ data: { loading, allItemRequests, refetch } }) => ({
+      loadingItemRequestsAccepted: loading,
+      itemRequestsAccepted: allItemRequests,
+      refetchItemRequestsAccepted: refetch,
     }),
   }),
   graphql(UPDATE_ITEM_REQUEST_STATUS, {
