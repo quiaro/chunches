@@ -16,9 +16,9 @@ const Styled = styled.div`
   }
 `;
 
-const ItemRequestMessage = ({ itemRequest, onAccept, onReject, className }) => {
-  const message = `${itemRequest.requester.name}
-    would like your ${itemRequest.item.title}`;
+const MessageItemRequestAccepted = ({ itemRequest, onAccept, onReject, className }) => {
+  const message = `${itemRequest.owner.name}
+    has accepted to give you their ${itemRequest.item.title}`;
 
   return (
     <Styled className={className}>
@@ -27,8 +27,8 @@ const ItemRequestMessage = ({ itemRequest, onAccept, onReject, className }) => {
           {message}
         </span>
         <div className="actions">
-          <Button onClick={ onAccept }>Accept</Button>
-          <Button onClick={ onReject }>Reject</Button>
+          <Button onClick={ onAccept }>Schedule pickup</Button>
+          <Button onClick={ onReject }>Cancel</Button>
         </div>
       </div>
       <img
@@ -39,4 +39,4 @@ const ItemRequestMessage = ({ itemRequest, onAccept, onReject, className }) => {
   );
 };
 
-export default ItemRequestMessage;
+export default MessageItemRequestAccepted;

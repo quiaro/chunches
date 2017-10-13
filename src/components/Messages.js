@@ -1,9 +1,13 @@
 import React from 'react';
 import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
-import MessageItemRequest from './MessageItemRequest';
+import MessageItemRequestPending from './MessageItemRequestPending';
+import MessageItemRequestAccepted from './MessageItemRequestAccepted';
 import ErrorHandler from '../common/ErrorHandler';
-import { ITEM_REQUESTS_PENDING } from '../queries/item_request';
+import {
+  ITEM_REQUESTS_PENDING,
+  ITEM_REQUESTS_ACCEPTED,
+} from '../queries/item_request';
 import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
 
 const Styled = styled.div`margin: 30px;`;
@@ -27,15 +31,18 @@ const updateItemRequest = (
 const Messages = props => {
   const {
     loadingItemRequestsPending,
+    loadingItemRequestsAccepted,
     itemRequestsPending,
+    itemRequestsAccepted,
     refetchItemRequestsPending,
+    refetchItemRequestsAccepted,
     updateItemRequestStatus,
   } = props;
 
-  if (loadingItemRequestsPending) return null;
+  if (loadingItemRequestsPending || loadingItemRequestsAccepted) return null;
 
-  const itemRequests = itemRequestsPending.map(itemRequest =>
-    <MessageItemRequest
+  const pending = itemRequestsPending.map(itemRequest =>
+    <MessageItemRequestPending
       key={itemRequest.id}
       itemRequest={itemRequest}
       onAccept={() =>
@@ -55,7 +62,29 @@ const Messages = props => {
     />,
   );
 
+  const accepted = itemRequestsAccepted.map(itemRequest =>
+    <MessageItemRequestAccepted
+      key={itemRequest.id}
+      itemRequest={itemRequest}
+      onAccept={() =>
+        updateItemRequest(
+          itemRequest.id,
+          'PROCESS',
+          updateItemRequestStatus,
+          refetchItemRequestsAccepted,
+        )}
+      onReject={() =>
+        updateItemRequest(
+          itemRequest.id,
+          'CANCEL',
+          updateItemRequestStatus,
+          refetchItemRequestsAccepted,
+        )}
+    />,
+  );
+
   const defaultMessage = <p>There are no messages</p>;
+  const itemRequests = [].concat(pending, accepted);
 
   return (
     <Styled>
@@ -75,6 +104,18 @@ export default compose(
       loadingItemRequestsPending: loading,
       itemRequestsPending: allItemRequests,
       refetchItemRequestsPending: refetch,
+    }),
+  }),
+  graphql(ITEM_REQUESTS_ACCEPTED, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+    props: ({ data: { loading, allItemRequests, refetch } }) => ({
+      loadingItemRequestsAccepted: loading,
+      itemRequestsAccepted: allItemRequests,
+      refetchItemRequestsAccepted: refetch,
     }),
   }),
   graphql(UPDATE_ITEM_REQUEST_STATUS, {
