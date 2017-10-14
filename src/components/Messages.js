@@ -3,10 +3,12 @@ import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
 import MessageItemRequestPending from './MessageItemRequestPending';
 import MessageItemRequestAccepted from './MessageItemRequestAccepted';
+import MessageItemRequestDenied from './MessageItemRequestDenied';
 import ErrorHandler from '../common/ErrorHandler';
 import {
   ITEM_REQUESTS_PENDING,
   ITEM_REQUESTS_ACCEPTED,
+  ITEM_REQUESTS_DENIED,
 } from '../queries/item_request';
 import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
 
@@ -32,14 +34,22 @@ const Messages = props => {
   const {
     loadingItemRequestsPending,
     loadingItemRequestsAccepted,
+    loadingItemRequestsDenied,
     itemRequestsPending,
     itemRequestsAccepted,
+    itemRequestsDenied,
     refetchItemRequestsPending,
     refetchItemRequestsAccepted,
+    refetchItemRequestsDenied,
     updateItemRequestStatus,
   } = props;
 
-  if (loadingItemRequestsPending || loadingItemRequestsAccepted) return null;
+  if (
+    loadingItemRequestsPending ||
+    loadingItemRequestsAccepted ||
+    loadingItemRequestsDenied
+  )
+    return null;
 
   const pending = itemRequestsPending.map(itemRequest =>
     <MessageItemRequestPending
@@ -83,8 +93,22 @@ const Messages = props => {
     />,
   );
 
+  const denied = itemRequestsDenied.map(itemRequest =>
+    <MessageItemRequestDenied
+      key={itemRequest.id}
+      itemRequest={itemRequest}
+      onAccept={() =>
+        updateItemRequest(
+          itemRequest.id,
+          'DENIED_UNFULFILLED',
+          updateItemRequestStatus,
+          refetchItemRequestsDenied,
+        )}
+    />,
+  );
+
   const defaultMessage = <p>There are no messages</p>;
-  const itemRequests = [].concat(pending, accepted);
+  const itemRequests = [].concat(pending, accepted, denied);
 
   return (
     <Styled>
@@ -116,6 +140,18 @@ export default compose(
       loadingItemRequestsAccepted: loading,
       itemRequestsAccepted: allItemRequests,
       refetchItemRequestsAccepted: refetch,
+    }),
+  }),
+  graphql(ITEM_REQUESTS_DENIED, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+    props: ({ data: { loading, allItemRequests, refetch } }) => ({
+      loadingItemRequestsDenied: loading,
+      itemRequestsDenied: allItemRequests,
+      refetchItemRequestsDenied: refetch,
     }),
   }),
   graphql(UPDATE_ITEM_REQUEST_STATUS, {
