@@ -5,6 +5,7 @@ import Badge from './Badge';
 import {
   ITEM_REQUESTS_PENDING,
   ITEM_REQUESTS_ACCEPTED,
+  ITEM_REQUESTS_DENIED,
 } from '../queries/item_request';
 import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
 
@@ -18,8 +19,12 @@ const Styled = styled.button`
 `;
 
 class NavBarMessages extends Component {
-  getItemRequestsNotViewed() {
-    const { itemRequestsPending, itemRequestsAccepted } = this.props;
+  getItemRequestsNotViewed(props) {
+    const {
+      itemRequestsPending,
+      itemRequestsAccepted,
+      itemRequestsDenied,
+    } = props;
 
     const pendingNotViewed = itemRequestsPending.filter(
       itemRequest => itemRequest.status === 'PENDING',
@@ -27,8 +32,11 @@ class NavBarMessages extends Component {
     const acceptedNotViewed = itemRequestsAccepted.filter(
       itemRequest => itemRequest.status === 'ACCEPTED',
     );
+    const deniedNotViewed = itemRequestsDenied.filter(
+      itemRequest => itemRequest.status === 'DENIED',
+    );
 
-    return [].concat(pendingNotViewed, acceptedNotViewed);
+    return [].concat(pendingNotViewed, acceptedNotViewed, deniedNotViewed);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -36,10 +44,16 @@ class NavBarMessages extends Component {
       isOpen,
       loadingItemRequestsPending,
       loadingItemRequestsAccepted,
+      loadingItemRequestsDenied,
     } = nextProps;
 
-    if (!loadingItemRequestsPending && !loadingItemRequestsAccepted && isOpen) {
-      const itemRequestsNotViewed = this.getItemRequestsNotViewed();
+    if (
+      !loadingItemRequestsPending &&
+      !loadingItemRequestsAccepted &&
+      !loadingItemRequestsDenied &&
+      isOpen
+    ) {
+      const itemRequestsNotViewed = this.getItemRequestsNotViewed(nextProps);
 
       if (itemRequestsNotViewed.length > 0) {
         // Mark pending requests as read
@@ -54,6 +68,7 @@ class NavBarMessages extends Component {
         Promise.all(updates).then(values => {
           this.props.refetchItemRequestsPending();
           this.props.refetchItemRequestsAccepted();
+          this.props.refetchItemRequestsDenied();
         });
       }
     }
@@ -63,12 +78,18 @@ class NavBarMessages extends Component {
     const {
       loadingItemRequestsPending,
       loadingItemRequestsAccepted,
+      loadingItemRequestsDenied,
     } = this.props;
 
-    if (loadingItemRequestsPending || loadingItemRequestsAccepted) return null;
+    if (
+      loadingItemRequestsPending ||
+      loadingItemRequestsAccepted ||
+      loadingItemRequestsDenied
+    )
+      return null;
 
     const { className, onClick } = this.props;
-    const itemRequestsNotViewed = this.getItemRequestsNotViewed();
+    const itemRequestsNotViewed = this.getItemRequestsNotViewed(this.props);
 
     return (
       <Styled className={className} onClick={onClick}>
@@ -102,6 +123,18 @@ export default compose(
       loadingItemRequestsAccepted: loading,
       itemRequestsAccepted: allItemRequests,
       refetchItemRequestsAccepted: refetch,
+    }),
+  }),
+  graphql(ITEM_REQUESTS_DENIED, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+    props: ({ data: { loading, allItemRequests, refetch } }) => ({
+      loadingItemRequestsDenied: loading,
+      itemRequestsDenied: allItemRequests,
+      refetchItemRequestsDenied: refetch,
     }),
   }),
   graphql(UPDATE_ITEM_REQUEST_STATUS, {
