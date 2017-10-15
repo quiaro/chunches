@@ -1,8 +1,10 @@
 import React from 'react'
 import GetStarted from '../components/GetStarted'
 import PendingTradeRequests from '../components/PendingTradeRequests'
+import StatusTradeRequests from '../components/StatusTradeRequests'
 import TradeRequestForm from '../containers/TradeRequestForm'
 import GiveAwayForm from '../containers/GiveAwayForm'
+
 
 const HomePrivate = (props) => {
   const { user } = props.data;
