@@ -16,5 +16,4 @@ const Network= (props) => {
         </div>
   )
 }
-
 export default Network

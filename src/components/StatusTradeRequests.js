@@ -4,7 +4,6 @@ import ToggleSwitch from '@trendmicro/react-toggle-switch';
 
 const StatusTradeRequests = (props) => {
   const { statusTradeRequests, updateTradeRequest } = props;
-  console.log(props);
   return (
     <div>
       {!statusTradeRequests.loading &&
@@ -22,6 +21,7 @@ const StatusTradeRequests = (props) => {
                   }}
 
               />
+      
             </div>
           </div>,
         )}
