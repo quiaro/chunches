@@ -10,25 +10,8 @@ import {
   ITEM_REQUESTS_ACCEPTED,
   ITEM_REQUESTS_DENIED,
 } from '../queries/item_request';
-import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
 
 const Styled = styled.div`margin: 30px;`;
-
-const updateItemRequest = (
-  itemRequestId,
-  status,
-  updateItemRequestStatus,
-  refetch,
-) => {
-  updateItemRequestStatus({
-    variables: {
-      id: itemRequestId,
-      status: status,
-    },
-  })
-    .then(() => refetch())
-    .catch(e => ErrorHandler(e));
-};
 
 const Messages = props => {
   const {
@@ -41,7 +24,6 @@ const Messages = props => {
     refetchItemRequestsPending,
     refetchItemRequestsAccepted,
     refetchItemRequestsDenied,
-    updateItemRequestStatus,
   } = props;
 
   if (
@@ -55,20 +37,7 @@ const Messages = props => {
     <MessageItemRequestPending
       key={itemRequest.id}
       itemRequest={itemRequest}
-      onAccept={() =>
-        updateItemRequest(
-          itemRequest.id,
-          'ACCEPTED',
-          updateItemRequestStatus,
-          refetchItemRequestsPending,
-        )}
-      onReject={() =>
-        updateItemRequest(
-          itemRequest.id,
-          'DENIED',
-          updateItemRequestStatus,
-          refetchItemRequestsPending,
-        )}
+      refetch={refetchItemRequestsPending}
     />,
   );
 
@@ -76,20 +45,7 @@ const Messages = props => {
     <MessageItemRequestAccepted
       key={itemRequest.id}
       itemRequest={itemRequest}
-      onAccept={() =>
-        updateItemRequest(
-          itemRequest.id,
-          'PROCESS',
-          updateItemRequestStatus,
-          refetchItemRequestsAccepted,
-        )}
-      onReject={() =>
-        updateItemRequest(
-          itemRequest.id,
-          'CANCEL',
-          updateItemRequestStatus,
-          refetchItemRequestsAccepted,
-        )}
+      refetch={refetchItemRequestsAccepted}
     />,
   );
 
@@ -97,13 +53,7 @@ const Messages = props => {
     <MessageItemRequestDenied
       key={itemRequest.id}
       itemRequest={itemRequest}
-      onAccept={() =>
-        updateItemRequest(
-          itemRequest.id,
-          'DENIED_UNFULFILLED',
-          updateItemRequestStatus,
-          refetchItemRequestsDenied,
-        )}
+      refetch={refetchItemRequestsDenied}
     />,
   );
 
@@ -153,8 +103,5 @@ export default compose(
       itemRequestsDenied: allItemRequests,
       refetchItemRequestsDenied: refetch,
     }),
-  }),
-  graphql(UPDATE_ITEM_REQUEST_STATUS, {
-    name: 'updateItemRequestStatus',
   }),
 )(Messages);
