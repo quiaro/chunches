@@ -1,61 +1,63 @@
 import React from 'react';
 import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
-import MessageItemRequest from './MessageItemRequest';
-import ErrorHandler from '../common/ErrorHandler';
-import { ITEM_REQUESTS_PENDING } from '../queries/item_request';
-import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
+import MessageItemRequestPending from './MessageItemRequestPending';
+import MessageItemRequestAccepted from './MessageItemRequestAccepted';
+import MessageItemRequestDenied from './MessageItemRequestDenied';
+import {
+  ITEM_REQUESTS_PENDING,
+  ITEM_REQUESTS_ACCEPTED,
+  ITEM_REQUESTS_DENIED,
+} from '../queries/item_request';
 
 const Styled = styled.div`margin: 30px;`;
-
-const updateItemRequest = (
-  itemRequestId,
-  status,
-  updateItemRequestStatus,
-  refetch,
-) => {
-  updateItemRequestStatus({
-    variables: {
-      id: itemRequestId,
-      status: status,
-    },
-  })
-    .then(() => refetch())
-    .catch(e => ErrorHandler(e));
-};
 
 const Messages = props => {
   const {
     loadingItemRequestsPending,
+    loadingItemRequestsAccepted,
+    loadingItemRequestsDenied,
     itemRequestsPending,
+    itemRequestsAccepted,
+    itemRequestsDenied,
     refetchItemRequestsPending,
-    updateItemRequestStatus,
+    refetchItemRequestsAccepted,
+    refetchItemRequestsDenied,
   } = props;
 
-  if (loadingItemRequestsPending) return null;
+  if (
+    loadingItemRequestsPending ||
+    loadingItemRequestsAccepted ||
+    loadingItemRequestsDenied
+  )
+    return null;
 
-  const itemRequests = itemRequestsPending.map(itemRequest =>
-    <MessageItemRequest
+  const pending = itemRequestsPending.map(itemRequest =>
+    <MessageItemRequestPending
       key={itemRequest.id}
       itemRequest={itemRequest}
-      onAccept={() =>
-        updateItemRequest(
-          itemRequest.id,
-          'ACCEPTED',
-          updateItemRequestStatus,
-          refetchItemRequestsPending,
-        )}
-      onReject={() =>
-        updateItemRequest(
-          itemRequest.id,
-          'DENIED',
-          updateItemRequestStatus,
-          refetchItemRequestsPending,
-        )}
+      refetch={refetchItemRequestsPending}
+    />,
+  );
+
+  const accepted = itemRequestsAccepted.map(itemRequest =>
+    <MessageItemRequestAccepted
+      key={itemRequest.id}
+      itemRequest={itemRequest}
+      refetch={refetchItemRequestsAccepted}
+    />,
+  );
+
+  const denied = itemRequestsDenied.map(itemRequest =>
+    <MessageItemRequestDenied
+      key={itemRequest.id}
+      itemRequest={itemRequest}
+      refetch={refetchItemRequestsDenied}
     />,
   );
 
   const defaultMessage = <p>There are no messages</p>;
+  const itemRequests = [].concat(pending, accepted, denied);
 
   return (
     <Styled>
@@ -77,7 +79,28 @@ export default compose(
       refetchItemRequestsPending: refetch,
     }),
   }),
-  graphql(UPDATE_ITEM_REQUEST_STATUS, {
-    name: 'updateItemRequestStatus',
+  graphql(ITEM_REQUESTS_ACCEPTED, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+    props: ({ data: { loading, allItemRequests, refetch } }) => ({
+      loadingItemRequestsAccepted: loading,
+      itemRequestsAccepted: allItemRequests,
+      refetchItemRequestsAccepted: refetch,
+    }),
+  }),
+  graphql(ITEM_REQUESTS_DENIED, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+    props: ({ data: { loading, allItemRequests, refetch } }) => ({
+      loadingItemRequestsDenied: loading,
+      itemRequestsDenied: allItemRequests,
+      refetchItemRequestsDenied: refetch,
+    }),
   }),
 )(Messages);

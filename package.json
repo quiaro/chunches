@@ -12,6 +12,7 @@
     "jwt-decode": "^2.2.0",
     "react": "^16.0.0",
     "react-apollo": "^1.4.15",
+    "react-dates": "^13.0.5",
     "react-dom": "^16.0.0",
     "react-dropzone": "^4.1.2",
     "react-router": "^4.2.0",

@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
 import Badge from './Badge';
-import { ITEM_REQUESTS_PENDING } from '../queries/item_request';
+import {
+  ITEM_REQUESTS_PENDING,
+  ITEM_REQUESTS_ACCEPTED,
+  ITEM_REQUESTS_DENIED,
+} from '../queries/item_request';
 import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
 
 const Styled = styled.button`
@@ -15,21 +19,41 @@ const Styled = styled.button`
 `;
 
 class NavBarMessages extends Component {
-  getItemRequestsNotViewed(itemRequests) {
-    return itemRequests.filter(itemRequest => itemRequest.status === 'PENDING');
+  getItemRequestsNotViewed(props) {
+    const {
+      itemRequestsPending,
+      itemRequestsAccepted,
+      itemRequestsDenied,
+    } = props;
+
+    const pendingNotViewed = itemRequestsPending.filter(
+      itemRequest => itemRequest.status === 'PENDING',
+    );
+    const acceptedNotViewed = itemRequestsAccepted.filter(
+      itemRequest => itemRequest.status === 'ACCEPTED',
+    );
+    const deniedNotViewed = itemRequestsDenied.filter(
+      itemRequest => itemRequest.status === 'DENIED',
+    );
+
+    return [].concat(pendingNotViewed, acceptedNotViewed, deniedNotViewed);
   }
 
   componentWillReceiveProps(nextProps) {
     const {
       isOpen,
       loadingItemRequestsPending,
-      itemRequestsPending,
+      loadingItemRequestsAccepted,
+      loadingItemRequestsDenied,
     } = nextProps;
 
-    if (!loadingItemRequestsPending && isOpen) {
-      const itemRequestsNotViewed = this.getItemRequestsNotViewed(
-        itemRequestsPending,
-      );
+    if (
+      !loadingItemRequestsPending &&
+      !loadingItemRequestsAccepted &&
+      !loadingItemRequestsDenied &&
+      isOpen
+    ) {
+      const itemRequestsNotViewed = this.getItemRequestsNotViewed(nextProps);
 
       if (itemRequestsNotViewed.length > 0) {
         // Mark pending requests as read
@@ -37,26 +61,35 @@ class NavBarMessages extends Component {
           this.props.updateItemRequestStatus({
             variables: {
               id: itemRequest.id,
-              status: 'PENDING_ACK',
+              status: `${itemRequest.status}_ACK`,
             },
           }),
         );
         Promise.all(updates).then(values => {
           this.props.refetchItemRequestsPending();
+          this.props.refetchItemRequestsAccepted();
+          this.props.refetchItemRequestsDenied();
         });
       }
     }
   }
 
   render() {
-    const { loadingItemRequestsPending, itemRequestsPending } = this.props;
+    const {
+      loadingItemRequestsPending,
+      loadingItemRequestsAccepted,
+      loadingItemRequestsDenied,
+    } = this.props;
 
-    if (loadingItemRequestsPending) return null;
+    if (
+      loadingItemRequestsPending ||
+      loadingItemRequestsAccepted ||
+      loadingItemRequestsDenied
+    )
+      return null;
 
     const { className, onClick } = this.props;
-    const itemRequestsNotViewed = this.getItemRequestsNotViewed(
-      itemRequestsPending,
-    );
+    const itemRequestsNotViewed = this.getItemRequestsNotViewed(this.props);
 
     return (
       <Styled className={className} onClick={onClick}>
@@ -78,6 +111,30 @@ export default compose(
       loadingItemRequestsPending: loading,
       itemRequestsPending: allItemRequests,
       refetchItemRequestsPending: refetch,
+    }),
+  }),
+  graphql(ITEM_REQUESTS_ACCEPTED, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+    props: ({ data: { loading, allItemRequests, refetch } }) => ({
+      loadingItemRequestsAccepted: loading,
+      itemRequestsAccepted: allItemRequests,
+      refetchItemRequestsAccepted: refetch,
+    }),
+  }),
+  graphql(ITEM_REQUESTS_DENIED, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+    props: ({ data: { loading, allItemRequests, refetch } }) => ({
+      loadingItemRequestsDenied: loading,
+      itemRequestsDenied: allItemRequests,
+      refetchItemRequestsDenied: refetch,
     }),
   }),
   graphql(UPDATE_ITEM_REQUEST_STATUS, {

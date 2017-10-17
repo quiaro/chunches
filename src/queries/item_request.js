@@ -30,7 +30,12 @@ export const ITEM_REQUESTS_PENDING = gql`
 export const ITEM_REQUESTS_ACCEPTED = gql`
   query($uid: ID!) {
     allItemRequests(
-      filter: { AND: [{ requester: { id: $uid } }, { status: ACCEPTED }] }
+      filter: {
+        AND: [
+          { requester: { id: $uid } }
+          { OR: [{ status: ACCEPTED }, { status: ACCEPTED_ACK }] }
+        ]
+      }
     ) {
       id
       owner {
@@ -44,6 +49,7 @@ export const ITEM_REQUESTS_ACCEPTED = gql`
           secret
         }
       }
+      status
     }
   }
 `;
@@ -51,7 +57,12 @@ export const ITEM_REQUESTS_ACCEPTED = gql`
 export const ITEM_REQUESTS_DENIED = gql`
   query($uid: ID!) {
     allItemRequests(
-      filter: { AND: [{ requester: { id: $uid } }, { status: DENIED }] }
+      filter: {
+        AND: [
+          { requester: { id: $uid } }
+          { OR: [{ status: DENIED }, { status: DENIED_ACK }] }
+        ]
+      }
     ) {
       id
       item {
@@ -61,6 +72,7 @@ export const ITEM_REQUESTS_DENIED = gql`
           secret
         }
       }
+      status
     }
   }
 `;
