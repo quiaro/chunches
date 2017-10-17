@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import MessageItemRequestPending from './MessageItemRequestPending';
 import MessageItemRequestAccepted from './MessageItemRequestAccepted';
 import MessageItemRequestDenied from './MessageItemRequestDenied';
-import ErrorHandler from '../common/ErrorHandler';
 import {
   ITEM_REQUESTS_PENDING,
   ITEM_REQUESTS_ACCEPTED,

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { graphql } from 'react-apollo';
 import styled from 'styled-components';
 import Button from './styled/Button';
+import Dialog from './Dialog';
 import ErrorHandler from '../common/ErrorHandler';
 import { IMAGE_ENDPOINT } from '../common/constants';
 import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
@@ -23,13 +24,22 @@ class MessageItemRequestAccepted extends PureComponent {
 
   constructor(props) {
     super(props);
+    this.state = {
+      dialogActive: false
+    }
+    this.closeDialog = this.closeDialog.bind(this);
     this.processItemRequest = this.processItemRequest.bind(this);
     this.cancelItemRequest = this.cancelItemRequest.bind(this);
   }
 
+  closeDialog() {
+    this.setState({ dialogActive: false });
+  }
+
   processItemRequest() {
-    const newStatus = 'PROCESS';
-    this.updateStatus(newStatus);
+    this.setState({ dialogActive: true });
+    // const newStatus = 'PROCESS';
+    // this.updateStatus(newStatus);
   }
 
   cancelItemRequest() {
@@ -50,6 +60,7 @@ class MessageItemRequestAccepted extends PureComponent {
 
   render() {
     const { itemRequest, className } = this.props;
+    const { dialogActive } = this.state;
     const message = `${itemRequest.owner.name} has accepted to give you their ${itemRequest.item.title}`;
 
     return (
@@ -67,6 +78,11 @@ class MessageItemRequestAccepted extends PureComponent {
           alt={itemRequest.item.title}
           src={`${IMAGE_ENDPOINT}/${itemRequest.item.image.secret}/90x`}
         />
+        { dialogActive &&
+          <Dialog onClose={this.closeDialog}>
+            <span>I am the date overlay</span>
+          </Dialog>
+        }
       </Styled>
     );
   }
