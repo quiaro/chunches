@@ -3,6 +3,7 @@ import { graphql } from 'react-apollo';
 import styled from 'styled-components';
 import Button from './styled/Button';
 import Dialog from './Dialog';
+import SchedulePickup from './SchedulePickup';
 import ErrorHandler from '../common/ErrorHandler';
 import { IMAGE_ENDPOINT } from '../common/constants';
 import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
@@ -25,7 +26,7 @@ class MessageItemRequestAccepted extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      dialogActive: false
+      dialogActive: true
     }
     this.closeDialog = this.closeDialog.bind(this);
     this.processItemRequest = this.processItemRequest.bind(this);
@@ -80,7 +81,7 @@ class MessageItemRequestAccepted extends PureComponent {
         />
         { dialogActive &&
           <Dialog onClose={this.closeDialog}>
-            <span>I am the date overlay</span>
+            <SchedulePickup onCancel={this.closeDialog} />
           </Dialog>
         }
       </Styled>

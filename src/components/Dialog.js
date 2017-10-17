@@ -1,6 +1,23 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import styled from 'styled-components';
 import '../styles/dialog.css';
+
+const Styled = styled.div`
+  position: relative;
+  padding-top: 10px;
+
+  > button {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    height: 1.4rem;
+    width: 1.4rem;
+    border-radius: 50%;
+    background-color: ${props => props.theme.button_background};
+    color: ${props => props.theme.button_text};
+  }
+`;
 
 class Dialog extends Component {
   constructor(props) {
@@ -16,11 +33,11 @@ class Dialog extends Component {
 
   render() {
     return ReactDOM.createPortal(
-      <div className="content">
+      <Styled>
         <button onClick={this.props.onClose}>x</button>
         {this.props.children}
-      </div>,
-      this.overlayContainer
+      </Styled>,
+      this.overlayContainer,
     );
   }
 }
