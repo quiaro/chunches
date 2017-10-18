@@ -1,8 +1,28 @@
-.SingleDatePicker .DateInput {
-  padding-left: 0;
-  width: 90px;
+.SingleDatePicker {
+  border-radius: 2px;
+  transition: all 400ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.12), 0 0 4px 0 rgba(0, 0, 0, 0.08);
+}
+
+.SingleDatePicker:hover,
+.SingleDatePicker:focus {
+  box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.12), 0 0 8px 0 rgba(0, 0, 0, 0.08);
+}
+
+.SingleDatePicker .SingleDatePickerInput {
+  border: 0 none;
+}
+
+.SingleDatePicker .SingleDatePickerInput_calendarIcon,
+.SingleDatePicker .DateInput_input {
+  cursor: pointer;
 }
 
 .SingleDatePicker .SingleDatePickerInput_calendarIcon {
   padding: 6px;
+}
+
+.SingleDatePicker .DateInput {
+  padding-left: 0;
+  width: 90px;
 }
