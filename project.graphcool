@@ -1,7 +1,7 @@
 # project: cj7gdhdwb02te01141lbxk8vo
 # version: 38
 
-type File implements Node {
+type File @model {
   contentType: String!
   createdAt: DateTime!
   id: ID! @isUnique
@@ -13,7 +13,7 @@ type File implements Node {
   item: Item @relation(name: "ItemImage")
 }
 
-type User implements Node {
+type User @model {
   createdAt: DateTime!
   email: String @isUnique
   id: ID! @isUnique
@@ -29,7 +29,7 @@ type User implements Node {
   outgoingRequests: [ItemRequest!]! @relation(name: "RequestsOnUser")
 }
 
-type Invite implements Node {
+type Invite @model {
   createdAt: DateTime!
   id: ID! @isUnique
   inviter: [User!]! @relation(name: "UserInvites")
@@ -38,7 +38,7 @@ type Invite implements Node {
   updatedAt: DateTime!
 }
 
-type TradeRequest implements Node {
+type TradeRequest @model {
   id: ID! @isUnique
   pursuer: User! @relation(name: "UserPursuing")
   pursued: User! @relation(name: "UserPursued")
@@ -73,7 +73,7 @@ enum ItemStatus {
   SHARE
 }
 
-type Item implements Node {
+type Item @model {
   createdAt: DateTime!
   id: ID! @isUnique
   owner: User! @relation(name: "UserItems")
@@ -85,7 +85,7 @@ type Item implements Node {
   requests: [ItemRequest!]! @relation(name: "RequestsOnItem")
 }
 
-type ItemRequest implements Node {
+type ItemRequest @model {
   id: ID! @isUnique
   owner: User! @relation(name: "RequestsOnOwner")
   requester: User! @relation(name: "RequestsOnUser")
@@ -95,7 +95,7 @@ type ItemRequest implements Node {
   updatedAt: DateTime!
 }
 
-type Tag implements Node {
+type Tag @model {
   id: ID! @isUnique
   key: String!
   items: [Item!]! @relation(name: "ItemTags")
