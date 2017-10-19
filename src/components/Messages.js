@@ -23,6 +23,7 @@ const Messages = props => {
     refetchItemRequestsPending,
     refetchItemRequestsAccepted,
     refetchItemRequestsDenied,
+    user,
   } = props;
 
   if (
@@ -45,6 +46,7 @@ const Messages = props => {
       key={itemRequest.id}
       itemRequest={itemRequest}
       refetch={refetchItemRequestsAccepted}
+      user={user}
     />,
   );
 

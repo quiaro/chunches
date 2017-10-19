@@ -1,7 +1,7 @@
 import { gql } from 'react-apollo';
 
 export const ITEM_REQUESTS_PENDING = gql`
-  query($uid: ID!) {
+  query ItemRequestsPending($uid: ID!) {
     allItemRequests(
       filter: {
         AND: [
@@ -28,7 +28,7 @@ export const ITEM_REQUESTS_PENDING = gql`
 `;
 
 export const ITEM_REQUESTS_ACCEPTED = gql`
-  query($uid: ID!) {
+  query ItemRequestsAccepted($uid: ID!) {
     allItemRequests(
       filter: {
         AND: [
@@ -50,12 +50,19 @@ export const ITEM_REQUESTS_ACCEPTED = gql`
         }
       }
       status
+      transfer {
+        id
+        date
+        method
+        requesterApproved
+        ownerApproved
+      }
     }
   }
 `;
 
 export const ITEM_REQUESTS_DENIED = gql`
-  query($uid: ID!) {
+  query ItemRequestsDenied($uid: ID!) {
     allItemRequests(
       filter: {
         AND: [

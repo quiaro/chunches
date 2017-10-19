@@ -1,5 +1,5 @@
 # project: cj7gdhdwb02te01141lbxk8vo
-# version: 38
+# version: 39
 
 type File @model {
   contentType: String!
@@ -61,8 +61,8 @@ enum ItemRequestStatus {
   DENIED_UNFULFILLED
   ACCEPTED
   ACCEPTED_ACK
-  PROCESS
-  PROCESS_ACK
+  TRANSFER
+  TRANSFER_FULFILLED
   CANCEL
   CANCEL_ACK
   CANCEL_UNFULFILLED
@@ -91,6 +91,24 @@ type ItemRequest @model {
   requester: User! @relation(name: "RequestsOnUser")
   item: Item! @relation(name: "RequestsOnItem")
   status: ItemRequestStatus
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  transfer: ItemTransfer @relation(name: "TransferOnItemRequest")
+}
+
+enum TransferOption {
+  PICKUP
+  DELIVERY
+  ARRANGED
+}
+
+type ItemTransfer @model {
+  id: ID! @isUnique
+  request: ItemRequest! @relation(name: "TransferOnItemRequest")
+  date: DateTime!
+  method: TransferOption
+  requesterApproved: Boolean!
+  ownerApproved: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
 }

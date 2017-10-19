@@ -22,30 +22,34 @@ const Styled = styled.div`
 `;
 
 class MessageItemRequestAccepted extends PureComponent {
-
   constructor(props) {
     super(props);
     this.state = {
-      dialogActive: true
-    }
-    this.closeDialog = this.closeDialog.bind(this);
-    this.processItemRequest = this.processItemRequest.bind(this);
+      dialogActive: true,
+    };
     this.cancelItemRequest = this.cancelItemRequest.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
+    this.onTransferSchedule = this.onTransferSchedule.bind(this);
+    this.scheduleItemTransfer = this.scheduleItemTransfer.bind(this);
+  }
+
+  cancelItemRequest() {
+    const newStatus = 'CANCEL';
+    this.updateStatus(newStatus);
   }
 
   closeDialog() {
     this.setState({ dialogActive: false });
   }
 
-  processItemRequest() {
-    this.setState({ dialogActive: true });
-    // const newStatus = 'PROCESS';
+  onTransferSchedule() {
+    this.closeDialog();
+    // const newStatus = 'TRANSFER';
     // this.updateStatus(newStatus);
   }
 
-  cancelItemRequest() {
-    const newStatus = 'CANCEL';
-    this.updateStatus(newStatus);
+  scheduleItemTransfer() {
+    this.setState({ dialogActive: true });
   }
 
   updateStatus(status) {
@@ -55,14 +59,16 @@ class MessageItemRequestAccepted extends PureComponent {
         id: itemRequest.id,
         status: status,
       },
-    }).then(() => refetch())
+    })
+      .then(() => refetch())
       .catch(e => ErrorHandler(e));
   }
 
   render() {
-    const { itemRequest, className } = this.props;
+    const { itemRequest, className, user } = this.props;
     const { dialogActive } = this.state;
-    const message = `${itemRequest.owner.name} has accepted to give you their ${itemRequest.item.title}`;
+    const message = `${itemRequest.owner
+      .name} has accepted to give you their ${itemRequest.item.title}`;
 
     return (
       <Styled className={className}>
@@ -71,19 +77,23 @@ class MessageItemRequestAccepted extends PureComponent {
             {message}
           </span>
           <div className="actions">
-            <Button onClick={ this.processItemRequest }>Schedule pickup</Button>
-            <Button onClick={ this.cancelItemRequest }>Cancel</Button>
+            <Button onClick={this.scheduleItemTransfer}>Schedule pickup</Button>
+            <Button onClick={this.cancelItemRequest}>Cancel</Button>
           </div>
         </div>
         <img
           alt={itemRequest.item.title}
           src={`${IMAGE_ENDPOINT}/${itemRequest.item.image.secret}/90x`}
         />
-        { dialogActive &&
+        {dialogActive &&
           <Dialog onClose={this.closeDialog}>
-            <SchedulePickup onCancel={this.closeDialog} />
-          </Dialog>
-        }
+            <SchedulePickup
+              itemRequest={itemRequest}
+              onCancel={this.closeDialog}
+              onSchedule={this.onTransferSchedule}
+              user={user}
+            />
+          </Dialog>}
       </Styled>
     );
   }

@@ -12,3 +12,11 @@ export const debounce = (func, wait, immediate) => {
   		if (callNow) func.apply(context, args);
   	};
   };
+
+export const getTime = (timeStr) => {
+  const parts = timeStr.split(':');
+  return {
+    hour: parseInt(parts[0], 10),
+    minute: parseInt(parts[1], 10)
+  }
+}
