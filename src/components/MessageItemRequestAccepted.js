@@ -3,7 +3,7 @@ import { graphql } from 'react-apollo';
 import styled from 'styled-components';
 import Button from './styled/Button';
 import Dialog from './Dialog';
-import SchedulePickup from './SchedulePickup';
+import ScheduleTransfer from './ScheduleTransfer';
 import ErrorHandler from '../common/ErrorHandler';
 import { IMAGE_ENDPOINT } from '../common/constants';
 import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
@@ -84,7 +84,7 @@ class MessageItemRequestAccepted extends PureComponent {
         />
         {dialogActive &&
           <Dialog onClose={this.closeDialog}>
-            <SchedulePickup
+            <ScheduleTransfer
               itemRequest={itemRequest}
               onCancel={this.closeDialog}
               onSchedule={this.onTransferSchedule}

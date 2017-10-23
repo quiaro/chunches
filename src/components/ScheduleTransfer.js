@@ -31,7 +31,7 @@ const Styled = styled.div`
   }
 `;
 
-class SchedulePickup extends Component {
+class ScheduleTransfer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -127,4 +127,4 @@ export default graphql(CREATE_ITEM_TRANSFER, {
       },
     ],
   }),
-})(SchedulePickup);
+})(ScheduleTransfer);
