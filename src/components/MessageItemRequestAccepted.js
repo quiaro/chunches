@@ -25,7 +25,7 @@ class MessageItemRequestAccepted extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      dialogActive: true,
+      dialogActive: false,
     };
     this.cancelItemRequest = this.cancelItemRequest.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
@@ -34,8 +34,7 @@ class MessageItemRequestAccepted extends PureComponent {
   }
 
   cancelItemRequest() {
-    const newStatus = 'CANCEL';
-    this.updateStatus(newStatus);
+    this.updateStatus('CANCEL');
   }
 
   closeDialog() {
@@ -44,8 +43,6 @@ class MessageItemRequestAccepted extends PureComponent {
 
   onTransferSchedule() {
     this.closeDialog();
-    // const newStatus = 'TRANSFER';
-    // this.updateStatus(newStatus);
   }
 
   scheduleItemTransfer() {

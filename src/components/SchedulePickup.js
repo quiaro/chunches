@@ -108,6 +108,10 @@ const CREATE_ITEM_TRANSFER = gql`
     ) {
       id
     }
+
+    updateItemRequest(id: $itemRequestId, status: TRANSFER) {
+      id
+    }
   }
 `;
 
