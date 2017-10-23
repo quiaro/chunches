@@ -4,10 +4,12 @@ import styled from 'styled-components';
 import MessageItemRequestPending from './MessageItemRequestPending';
 import MessageItemRequestAccepted from './MessageItemRequestAccepted';
 import MessageItemRequestDenied from './MessageItemRequestDenied';
+import MessageItemRequestTransfer from './MessageItemRequestTransfer';
 import {
   ITEM_REQUESTS_PENDING,
   ITEM_REQUESTS_ACCEPTED,
   ITEM_REQUESTS_DENIED,
+  ITEM_REQUESTS_TRANSFER,
 } from '../queries/item_request';
 
 const Styled = styled.div`margin: 30px;`;
@@ -17,19 +19,23 @@ const Messages = props => {
     loadingItemRequestsPending,
     loadingItemRequestsAccepted,
     loadingItemRequestsDenied,
+    loadingItemRequestsTransfer,
     itemRequestsPending,
     itemRequestsAccepted,
     itemRequestsDenied,
+    itemRequestsTransfer,
     refetchItemRequestsPending,
     refetchItemRequestsAccepted,
     refetchItemRequestsDenied,
+    refetchItemRequestsTransfer,
     user,
   } = props;
 
   if (
     loadingItemRequestsPending ||
     loadingItemRequestsAccepted ||
-    loadingItemRequestsDenied
+    loadingItemRequestsDenied ||
+    loadingItemRequestsTransfer
   )
     return null;
 
@@ -58,8 +64,17 @@ const Messages = props => {
     />,
   );
 
+  const transfer = itemRequestsTransfer.map(itemRequest =>
+    <MessageItemRequestTransfer
+      key={itemRequest.id}
+      itemRequest={itemRequest}
+      refetchItemRequestsTransfer={refetchItemRequestsTransfer}
+      user={user}
+    />,
+  );
+
   const defaultMessage = <p>There are no messages</p>;
-  const itemRequests = [].concat(pending, accepted, denied);
+  const itemRequests = [].concat(pending, accepted, denied, transfer);
 
   return (
     <Styled>
@@ -103,6 +118,18 @@ export default compose(
       loadingItemRequestsDenied: loading,
       itemRequestsDenied: allItemRequests,
       refetchItemRequestsDenied: refetch,
+    }),
+  }),
+  graphql(ITEM_REQUESTS_TRANSFER, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+    props: ({ data: { loading, allItemRequests, refetch } }) => ({
+      loadingItemRequestsTransfer: loading,
+      itemRequestsTransfer: allItemRequests,
+      refetchItemRequestsTransfer: refetch,
     }),
   }),
 )(Messages);

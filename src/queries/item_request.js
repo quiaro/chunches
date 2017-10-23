@@ -50,13 +50,6 @@ export const ITEM_REQUESTS_ACCEPTED = gql`
         }
       }
       status
-      transfer {
-        id
-        date
-        method
-        requesterApproved
-        ownerApproved
-      }
     }
   }
 `;
@@ -80,6 +73,50 @@ export const ITEM_REQUESTS_DENIED = gql`
         }
       }
       status
+    }
+  }
+`;
+
+export const ITEM_REQUESTS_TRANSFER = gql`
+  query itemRequestsTransfer($uid: ID!) {
+    allItemRequests(
+      filter: {
+        OR: [
+          { AND: [
+            { requester: { id: $uid } }
+            { transfer: { requesterApproved: false } }
+            { status: TRANSFER }
+          ]}
+          { AND: [
+            { owner: { id: $uid } }
+            { transfer: { ownerApproved: false } }
+            { status: TRANSFER }
+          ]}
+        ]
+      }
+    ) {
+      id
+      owner {
+        id
+        name
+      }
+      requester {
+        id
+        name
+      }
+      item {
+        id
+        title
+        image {
+          secret
+        }
+      }
+      status
+      transfer {
+        id
+        date
+        method
+      }
     }
   }
 `;

@@ -27,13 +27,11 @@ class MessageItemRequestPending extends PureComponent {
   }
 
   acceptItemRequest() {
-    const newStatus = 'ACCEPTED';
-    this.updateStatus(newStatus);
+    this.updateStatus('ACCEPTED');
   }
 
   denyItemRequest() {
-    const newStatus = 'DENIED';
-    this.updateStatus(newStatus);
+    this.updateStatus('DENIED');
   }
 
   updateStatus(status) {
