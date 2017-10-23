@@ -6,7 +6,7 @@ export const ITEM_REQUESTS_PENDING = gql`
       filter: {
         AND: [
           { owner: { id: $uid } }
-          { OR: [{ status: PENDING }, { status: PENDING_ACK }] }
+          { status: PENDING }
         ]
       }
     ) {
@@ -33,7 +33,7 @@ export const ITEM_REQUESTS_ACCEPTED = gql`
       filter: {
         AND: [
           { requester: { id: $uid } }
-          { OR: [{ status: ACCEPTED }, { status: ACCEPTED_ACK }] }
+          { status: ACCEPTED }
         ]
       }
     ) {
@@ -60,7 +60,7 @@ export const ITEM_REQUESTS_DENIED = gql`
       filter: {
         AND: [
           { requester: { id: $uid } }
-          { OR: [{ status: DENIED }, { status: DENIED_ACK }] }
+          { status: DENIED }
         ]
       }
     ) {
