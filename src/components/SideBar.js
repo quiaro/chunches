@@ -3,10 +3,11 @@ import { withRouter } from 'react-router';
 import { graphql, compose } from 'react-apollo';
 import classNames from 'classnames';
 import styled from 'styled-components';
+import Notifications from './Notifications';
 import Messages from './Messages';
 import Profile from './Profile';
 import CURRENT_USER from '../queries/user';
-import { VIEW_NOTIFICATIONS, VIEW_PROFILE } from '../common/constants';
+import { VIEW_MESSAGES, VIEW_NOTIFICATIONS, VIEW_PROFILE } from '../common/constants';
 
 const Styled = styled.div`
   position: absolute;
@@ -71,7 +72,8 @@ class SideBar extends Component {
 
     return  (
       <Styled className={classes}>
-        { (view === VIEW_NOTIFICATIONS) && <Messages user={user} /> }
+        { (view === VIEW_NOTIFICATIONS) && <Notifications user={user} /> }
+        { (view === VIEW_MESSAGES) && <Messages user={user} /> }
         { (view === VIEW_PROFILE) && <Profile user={user} /> }
       </Styled>
     );

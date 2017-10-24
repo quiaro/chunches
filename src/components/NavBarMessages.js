@@ -51,7 +51,7 @@ const NavBarMessages = (props) => {
   return (
     <Styled className={className} onClick={onClick}>
       <Badge number={unresolved.length} />
-      <i className="material-icons">notifications</i>
+      <i className="material-icons">inbox</i>
     </Styled>
   );
 }

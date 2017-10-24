@@ -6,4 +6,5 @@ export const FILE_ENDPOINT = `https://api.graph.cool/file/v1/${GRAPHCOOL_ID}`
 export const IMAGE_ENDPOINT = `https://images.graph.cool/v1/${GRAPHCOOL_ID}`
 
 export const VIEW_NOTIFICATIONS = 'notifications';
+export const VIEW_MESSAGES = 'messages';
 export const VIEW_PROFILE = 'profile';

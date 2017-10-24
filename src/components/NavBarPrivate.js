@@ -3,13 +3,15 @@ import { withRouter } from 'react-router';
 import styled from 'styled-components';
 import NavBar from './styled/NavBar';
 import NavButton from './styled/NavButton';
+import NavBarNotifications from './NavBarNotifications';
 import NavBarMessages from './NavBarMessages';
 import NavLinks from './NavLinks';
 import NavIconLink from './NavIconLink';
-import { VIEW_NOTIFICATIONS, VIEW_PROFILE } from '../common/constants';
+import { VIEW_MESSAGES, VIEW_NOTIFICATIONS, VIEW_PROFILE } from '../common/constants';
 import { logout } from '../common/AuthService';
 
 const SideBarLinks = styled.div`
+  &.messages button.messages,
   &.notifications button.notifications,
   &.profile button.profile {
     background-color: ${props => props.theme.nav_link_selected_background};
@@ -75,6 +77,9 @@ class NavBarPrivate extends Component {
 
     let viewClass = '';
     switch (view) {
+      case VIEW_MESSAGES:
+        viewClass = 'messages';
+        break;
       case VIEW_NOTIFICATIONS:
         viewClass = 'notifications';
         break;
@@ -103,11 +108,17 @@ class NavBarPrivate extends Component {
         <NavLinks />
 
         <SideBarLinks className={activeLinkClass}>
-          <NavBarMessages
+          <NavBarNotifications
             className="dib pa3 no-underline notifications"
             user={user}
             onClick={() => this.toggleActiveLink(VIEW_NOTIFICATIONS)}
             isOpen={activeLinkClass === VIEW_NOTIFICATIONS}
+          />
+          <NavBarMessages
+            className="dib pa3 no-underline messages"
+            user={user}
+            onClick={() => this.toggleActiveLink(VIEW_MESSAGES)}
+            isOpen={activeLinkClass === VIEW_MESSAGES}
           />
           <NavIconLink
             className="dib pa3 no-underline profile"
