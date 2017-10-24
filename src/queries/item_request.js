@@ -92,14 +92,55 @@ export const ITEM_REQUESTS_TRANSFER = gql`
       filter: {
         OR: [
           { AND: [
+            { status: TRANSFER }
             { requester: { id: $uid } }
             { transfer: { requesterApproved: false } }
-            { status: TRANSFER }
           ]}
           { AND: [
+            { status: TRANSFER }
             { owner: { id: $uid } }
             { transfer: { ownerApproved: false } }
-            { status: TRANSFER }
+          ]}
+        ]
+      }
+    ) {
+      id
+      owner {
+        id
+        name
+      }
+      requester {
+        id
+        name
+      }
+      item {
+        id
+        title
+        image {
+          secret
+        }
+      }
+      status
+      transfer {
+        id
+        date
+        method
+      }
+    }
+  }
+`;
+
+export const ITEM_REQUESTS_CONFIRMED = gql`
+  query itemRequestsConfirmed($uid: ID!) {
+    allItemRequests(
+      filter: {
+        AND: [
+          { status: TRANSFER }
+          { transfer: { requesterApproved: true } }
+          { transfer: { ownerApproved: true } }
+          { OR: [
+            { requester: { id: $uid } }
+            { owner: { id: $uid } }
           ]}
         ]
       }
