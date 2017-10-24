@@ -42,6 +42,10 @@ export const ITEM_REQUESTS_ACCEPTED = gql`
         id
         name
       }
+      requester {
+        id
+        name
+      }
       item {
         id
         title
@@ -50,6 +54,11 @@ export const ITEM_REQUESTS_ACCEPTED = gql`
         }
       }
       status
+      transfer {
+        id
+        date
+        method
+      }
     }
   }
 `;

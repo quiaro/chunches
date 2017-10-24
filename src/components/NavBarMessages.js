@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
 import Badge from './Badge';

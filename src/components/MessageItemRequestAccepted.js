@@ -29,8 +29,8 @@ class MessageItemRequestAccepted extends PureComponent {
     };
     this.cancelItemRequest = this.cancelItemRequest.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
-    this.onTransferSchedule = this.onTransferSchedule.bind(this);
     this.scheduleItemTransfer = this.scheduleItemTransfer.bind(this);
+    this.onScheduleTransfer = this.onScheduleTransfer.bind(this);
   }
 
   cancelItemRequest() {
@@ -41,12 +41,14 @@ class MessageItemRequestAccepted extends PureComponent {
     this.setState({ dialogActive: false });
   }
 
-  onTransferSchedule() {
-    this.closeDialog();
-  }
-
   scheduleItemTransfer() {
     this.setState({ dialogActive: true });
+  }
+
+  onScheduleTransfer() {
+    // Refetch item requests after creation of the item transfer
+    this.props.refetch();
+    this.closeDialog();
   }
 
   updateStatus(status) {
@@ -87,7 +89,7 @@ class MessageItemRequestAccepted extends PureComponent {
             <ScheduleTransfer
               itemRequest={itemRequest}
               onCancel={this.closeDialog}
-              onSchedule={this.onTransferSchedule}
+              onSchedule={this.onScheduleTransfer}
               user={user}
             />
           </Dialog>}

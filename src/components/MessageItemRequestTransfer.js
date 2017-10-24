@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import { graphql } from 'react-apollo';
 import styled from 'styled-components';
 import Button from './styled/Button';
+import Dialog from './Dialog';
+import ScheduleTransfer from './ScheduleTransfer';
 import ErrorHandler from '../common/ErrorHandler';
 import { IMAGE_ENDPOINT } from '../common/constants';
 import { UPDATE_ITEM_TRANSFER } from '../mutations/item_transfer';
@@ -22,14 +24,23 @@ const Styled = styled.div`
 class MessageItemRequestTransfer extends PureComponent {
   constructor(props) {
     super(props);
+    this.state = {
+      dialogActive: false,
+    };
+    this.closeDialog = this.closeDialog.bind(this);
     this.confirmItemTransfer = this.confirmItemTransfer.bind(this);
     this.rescheduleItemTransfer = this.rescheduleItemTransfer.bind(this);
     this.cancelItemTransfer = this.cancelItemTransfer.bind(this);
+    this.onScheduleTransfer = this.onScheduleTransfer.bind(this);
   }
 
   cancelItemTransfer() {
     // TODO
     console.log('Cancel item transfer');
+  }
+
+  closeDialog() {
+    this.setState({ dialogActive: false });
   }
 
   confirmItemTransfer() {
@@ -39,15 +50,13 @@ class MessageItemRequestTransfer extends PureComponent {
       updateItemTransfer,
     } = this.props;
 
-    console.log('Item transfer', transfer); // eslint-disable-line
-
     updateItemTransfer({
       variables: {
         id: transfer.id,
         date: transfer.date,
         method: transfer.method,
         requesterApproved: true,
-        ownerApproved: true
+        ownerApproved: true,
       },
     })
       .then(() => refetchItemRequestsTransfer())
@@ -64,7 +73,7 @@ class MessageItemRequestTransfer extends PureComponent {
     };
     const transferDate = new Date(transfer.date);
     const date = transferDate.toLocaleDateString('en-US', options);
-    const time = transferDate.toLocaleTimeString('en-US');
+    const time = transferDate.toLocaleTimeString();
 
     const transferAppointment = `${date} at ${time}`;
     const isOwner = user.id === itemRequest.owner.id;
@@ -76,13 +85,18 @@ class MessageItemRequestTransfer extends PureComponent {
           transfer of the ${itemRequest.item.title} for ${transferAppointment}`;
   }
 
+  onScheduleTransfer() {
+    this.props.refetchItemRequestsTransfer();
+    this.closeDialog();
+  }
+
   rescheduleItemTransfer() {
-    // TODO
-    console.log('Reschedule item transfer');
+    this.setState({ dialogActive: true });
   }
 
   render() {
     const { itemRequest, user, className } = this.props;
+    const { dialogActive } = this.state;
     const message = this.getItemTransferMessage(user, itemRequest);
 
     return (
@@ -101,6 +115,15 @@ class MessageItemRequestTransfer extends PureComponent {
           alt={itemRequest.item.title}
           src={`${IMAGE_ENDPOINT}/${itemRequest.item.image.secret}/90x`}
         />
+        {dialogActive &&
+          <Dialog onClose={this.closeDialog}>
+            <ScheduleTransfer
+              itemRequest={itemRequest}
+              onCancel={this.closeDialog}
+              onSchedule={this.onScheduleTransfer}
+              user={user}
+            />
+          </Dialog>}
       </Styled>
     );
   }
