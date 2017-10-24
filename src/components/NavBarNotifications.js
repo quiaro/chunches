@@ -1,6 +1,8 @@
 import React from 'react';
+import { graphql } from 'react-apollo';
 import styled from 'styled-components';
 import Badge from './Badge';
+import { ITEM_REQUESTS_CONFIRMED } from '../queries/item_request';
 
 const Styled = styled.button`
   position: relative;
@@ -11,19 +13,32 @@ const Styled = styled.button`
   }
 `;
 
-const NavBarMessages = (props) => {
-
+const NavBarMessages = props => {
   const {
+    loadingItemRequestsConfirmed,
+    itemRequestsConfirmed,
     className,
-    onClick
+    onClick,
   } = props;
+
+  if (loadingItemRequestsConfirmed) return null;
 
   return (
     <Styled className={className} onClick={onClick}>
-      <Badge number={3} />
+      <Badge number={itemRequestsConfirmed.length} />
       <i className="material-icons">notifications</i>
     </Styled>
   );
-}
+};
 
-export default NavBarMessages;
+export default graphql(ITEM_REQUESTS_CONFIRMED, {
+  options: ({ user }) => ({
+    variables: {
+      uid: user.id,
+    },
+  }),
+  props: ({ data: { loading, allItemRequests } }) => ({
+    loadingItemRequestsConfirmed: loading,
+    itemRequestsConfirmed: allItemRequests,
+  }),
+})(NavBarMessages);
