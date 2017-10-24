@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import Button from './styled/Button';
+import { getLocaleAppointment } from '../common/utils';
 import { IMAGE_ENDPOINT } from '../common/constants';
 
 const Styled = styled.div`
@@ -27,10 +28,20 @@ class NotificationItemTransfer extends PureComponent {
     console.log('Click handler for NotificationItemTransfer');
   }
 
+  getItemTransferNotification(user, itemRequest) {
+    const { transfer } = itemRequest;
+    const transferAppointment = getLocaleAppointment(transfer.date);
+    const isOwner = user.id === itemRequest.owner.id;
+    return isOwner
+      ? `Give ${itemRequest.item.title} to ${itemRequest.requester
+          .name} on ${transferAppointment}`
+      : `Receive ${itemRequest.item.title} from ${itemRequest.owner
+          .name} on ${transferAppointment}`;
+  }
+
   render() {
-    const { itemRequest, className } = this.props;
-    const message = `Notification: transfer appointment for ${itemRequest.item
-      .title}`;
+    const { itemRequest, user, className } = this.props;
+    const message = this.getItemTransferNotification(user, itemRequest);
 
     return (
       <Styled className={className}>

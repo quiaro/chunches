@@ -11,6 +11,7 @@ const Notifications = props => {
     loadingItemRequestsConfirmed,
     itemRequestsConfirmed,
     refetchItemRequestsConfirmed,
+    user,
   } = props;
 
   if (loadingItemRequestsConfirmed) return null;
@@ -20,6 +21,7 @@ const Notifications = props => {
       key={itemRequest.id}
       itemRequest={itemRequest}
       refetch={refetchItemRequestsConfirmed}
+      user={user}
     />,
   );
 

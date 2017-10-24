@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Button from './styled/Button';
 import Dialog from './Dialog';
 import ScheduleTransfer from './ScheduleTransfer';
+import { getLocaleAppointment } from '../common/utils';
 import ErrorHandler from '../common/ErrorHandler';
 import { IMAGE_ENDPOINT } from '../common/constants';
 import { UPDATE_ITEM_TRANSFER } from '../mutations/item_transfer';
@@ -65,17 +66,7 @@ class MessageItemRequestTransfer extends PureComponent {
 
   getItemTransferMessage(user, itemRequest) {
     const { transfer } = itemRequest;
-    const options = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
-    const transferDate = new Date(transfer.date);
-    const date = transferDate.toLocaleDateString('en-US', options);
-    const time = transferDate.toLocaleTimeString();
-
-    const transferAppointment = `${date} at ${time}`;
+    const transferAppointment = getLocaleAppointment(transfer.date);
     const isOwner = user.id === itemRequest.owner.id;
     return isOwner
       ? `${itemRequest.requester
