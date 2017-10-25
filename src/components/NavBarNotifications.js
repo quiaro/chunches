@@ -13,7 +13,7 @@ const Styled = styled.button`
   }
 `;
 
-const NavBarMessages = props => {
+const NavBarNotifications = props => {
   const {
     loadingItemRequestsConfirmed,
     itemRequestsConfirmed,
@@ -41,4 +41,4 @@ export default graphql(ITEM_REQUESTS_CONFIRMED, {
     loadingItemRequestsConfirmed: loading,
     itemRequestsConfirmed: allItemRequests,
   }),
-})(NavBarMessages);
+})(NavBarNotifications);

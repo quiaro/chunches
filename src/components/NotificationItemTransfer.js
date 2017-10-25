@@ -42,6 +42,8 @@ class NotificationItemTransfer extends PureComponent {
   render() {
     const { itemRequest, user, className } = this.props;
     const message = this.getItemTransferNotification(user, itemRequest);
+    const appointmentDateTime = Date.parse(itemRequest.transfer.date);
+    const currentDateTime = Date.now();
 
     return (
       <Styled className={className}>
@@ -49,9 +51,12 @@ class NotificationItemTransfer extends PureComponent {
           <span>
             {message}
           </span>
-          <div className="actions">
-            <Button onClick={this.clickHandler}>OK</Button>
-          </div>
+          { currentDateTime > appointmentDateTime &&
+            <div className="actions">
+              <Button onClick={this.onFulfill}>Done</Button>
+              <Button onClick={this.onCancel}>Cancel</Button>
+            </div>
+          }
         </div>
         <img
           alt={itemRequest.item.title}
