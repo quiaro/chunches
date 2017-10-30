@@ -1,8 +1,11 @@
 import React, { PureComponent } from 'react';
+import { graphql } from 'react-apollo';
 import styled from 'styled-components';
 import Button from './styled/Button';
 import { getLocaleAppointment } from '../common/utils';
+import ErrorHandler from '../common/ErrorHandler';
 import { IMAGE_ENDPOINT } from '../common/constants';
+import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
 
 const Styled = styled.div`
   display: flex;
@@ -20,12 +23,11 @@ const Styled = styled.div`
 class NotificationItemTransfer extends PureComponent {
   constructor(props) {
     super(props);
-    this.clickHandler = this.clickHandler.bind(this);
+    this.fulfillItemRequest = this.fulfillItemRequest.bind(this);
   }
 
-  clickHandler() {
-    // TODO
-    console.log('Click handler for NotificationItemTransfer');
+  fulfillItemRequest() {
+    this.updateStatus('TRANSFER_FULFILLED');
   }
 
   getItemTransferNotification(user, itemRequest) {
@@ -37,6 +39,23 @@ class NotificationItemTransfer extends PureComponent {
           .name} on ${transferAppointment}`
       : `Receive ${itemRequest.item.title} from ${itemRequest.owner
           .name} on ${transferAppointment}`;
+  }
+
+  updateStatus(status) {
+    const {
+      itemRequest,
+      refetchItemRequestsConfirmed,
+      updateItemRequestStatus,
+    } = this.props;
+
+    updateItemRequestStatus({
+      variables: {
+        id: itemRequest.id,
+        status: status,
+      },
+    })
+      .then(refetchItemRequestsConfirmed)
+      .catch(e => ErrorHandler(e));
   }
 
   render() {
@@ -51,12 +70,12 @@ class NotificationItemTransfer extends PureComponent {
           <span>
             {message}
           </span>
-          { currentDateTime > appointmentDateTime &&
-            <div className="actions">
-              <Button onClick={this.onFulfill}>Done</Button>
-              <Button onClick={this.onCancel}>Cancel</Button>
-            </div>
-          }
+          <div className="actions">
+            {currentDateTime > appointmentDateTime &&
+              <Button onClick={this.fulfillItemRequest}>Done</Button>}
+            <Button onClick={this.rescheduleTransfer}>Re-schedule</Button>
+            <Button onClick={this.cancelItemRequest}>Cancel</Button>
+          </div>
         </div>
         <img
           alt={itemRequest.item.title}
@@ -67,4 +86,6 @@ class NotificationItemTransfer extends PureComponent {
   }
 }
 
-export default NotificationItemTransfer;
+export default graphql(UPDATE_ITEM_REQUEST_STATUS, {
+  name: 'updateItemRequestStatus',
+})(NotificationItemTransfer);

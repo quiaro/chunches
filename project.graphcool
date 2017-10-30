@@ -1,5 +1,5 @@
 # project: cj7gdhdwb02te01141lbxk8vo
-# version: 42
+# version: 43
 
 type File @model {
   contentType: String!
@@ -60,6 +60,7 @@ enum ItemRequestStatus {
   ACCEPTED
   TRANSFER
   TRANSFER_FULFILLED
+  TRANSFER_FULFILLED_BY_OWNER
   CANCEL
 }
 

@@ -20,7 +20,7 @@ const Notifications = props => {
     <NotificationItemTransfer
       key={itemRequest.id}
       itemRequest={itemRequest}
-      refetch={refetchItemRequestsConfirmed}
+      refetchItemRequestsConfirmed={refetchItemRequestsConfirmed}
       user={user}
     />,
   );
