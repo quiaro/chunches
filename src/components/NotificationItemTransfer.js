@@ -111,7 +111,10 @@ class NotificationItemTransfer extends PureComponent {
           <div className="actions">
             {currentDateTime > appointmentDateTime &&
               <Button onClick={this.fulfillItemRequest}>Done</Button>}
-            <Button onClick={this.rescheduleItemTransfer}>Re-schedule</Button>
+            {itemRequest.status !== 'TRANSFER_COMPLETE_BY_OWNER' &&
+              <Button onClick={this.rescheduleItemTransfer}>
+                Re-schedule
+              </Button>}
             <Button onClick={this.cancelItemRequest}>Cancel</Button>
           </div>
         </div>

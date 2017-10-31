@@ -154,6 +154,12 @@ export const ITEM_REQUESTS_CONFIRMED = gql`
               { OR: [{ requester: { id: $uid } }, { owner: { id: $uid } }] }
             ]
           }
+          {
+            AND: [
+              { status: TRANSFER_COMPLETE_BY_OWNER }
+              { requester: { id: $uid } }
+            ]
+          }
         ]
       }
     ) {
