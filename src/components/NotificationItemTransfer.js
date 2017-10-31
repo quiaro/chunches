@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import { graphql } from 'react-apollo';
 import styled from 'styled-components';
 import Button from './styled/Button';
+import Dialog from './Dialog';
+import ScheduleTransfer from './ScheduleTransfer';
 import { getLocaleAppointment } from '../common/utils';
 import ErrorHandler from '../common/ErrorHandler';
 import { IMAGE_ENDPOINT } from '../common/constants';
@@ -23,8 +25,14 @@ const Styled = styled.div`
 class NotificationItemTransfer extends PureComponent {
   constructor(props) {
     super(props);
+    this.state = {
+      dialogActive: false,
+    };
     this.cancelItemRequest = this.cancelItemRequest.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
     this.fulfillItemRequest = this.fulfillItemRequest.bind(this);
+    this.onScheduleTransfer = this.onScheduleTransfer.bind(this);
+    this.rescheduleItemTransfer = this.rescheduleItemTransfer.bind(this);
   }
 
   cancelItemRequest() {
@@ -49,6 +57,10 @@ class NotificationItemTransfer extends PureComponent {
       .catch(e => ErrorHandler(e));
   }
 
+  closeDialog() {
+    this.setState({ dialogActive: false });
+  }
+
   fulfillItemRequest() {
     this.updateStatus('TRANSFER_COMPLETE');
   }
@@ -62,6 +74,15 @@ class NotificationItemTransfer extends PureComponent {
           .name} on ${transferAppointment}`
       : `Receive ${itemRequest.item.title} from ${itemRequest.owner
           .name} on ${transferAppointment}`;
+  }
+
+  onScheduleTransfer() {
+    this.props.refetchItemRequestsConfirmed();
+    this.closeDialog();
+  }
+
+  rescheduleItemTransfer() {
+    this.setState({ dialogActive: true });
   }
 
   updateStatus(status) {
@@ -83,6 +104,7 @@ class NotificationItemTransfer extends PureComponent {
 
   render() {
     const { itemRequest, user, className } = this.props;
+    const { dialogActive } = this.state;
     const message = this.getItemTransferNotification(user, itemRequest);
     const appointmentDateTime = Date.parse(itemRequest.transfer.date);
     const currentDateTime = Date.now();
@@ -96,7 +118,7 @@ class NotificationItemTransfer extends PureComponent {
           <div className="actions">
             {currentDateTime > appointmentDateTime &&
               <Button onClick={this.fulfillItemRequest}>Done</Button>}
-            <Button onClick={this.rescheduleTransfer}>Re-schedule</Button>
+            <Button onClick={this.rescheduleItemTransfer}>Re-schedule</Button>
             <Button onClick={this.cancelItemRequest}>Cancel</Button>
           </div>
         </div>
@@ -104,6 +126,15 @@ class NotificationItemTransfer extends PureComponent {
           alt={itemRequest.item.title}
           src={`${IMAGE_ENDPOINT}/${itemRequest.item.image.secret}/90x`}
         />
+        {dialogActive &&
+          <Dialog onClose={this.closeDialog}>
+            <ScheduleTransfer
+              itemRequest={itemRequest}
+              onCancel={this.closeDialog}
+              onSchedule={this.onScheduleTransfer}
+              user={user}
+            />
+          </Dialog>}
       </Styled>
     );
   }

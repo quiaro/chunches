@@ -30,14 +30,14 @@ class MessageItemRequestTransfer extends PureComponent {
     this.state = {
       dialogActive: false,
     };
+    this.cancelItemRequest = this.cancelItemRequest.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
     this.confirmItemTransfer = this.confirmItemTransfer.bind(this);
-    this.rescheduleItemTransfer = this.rescheduleItemTransfer.bind(this);
-    this.cancelItemTransfer = this.cancelItemTransfer.bind(this);
     this.onScheduleTransfer = this.onScheduleTransfer.bind(this);
+    this.rescheduleItemTransfer = this.rescheduleItemTransfer.bind(this);
   }
 
-  cancelItemTransfer() {
+  cancelItemRequest() {
     const {
       itemRequest,
       user,
@@ -118,7 +118,7 @@ class MessageItemRequestTransfer extends PureComponent {
           <div className="actions">
             <Button onClick={this.confirmItemTransfer}>Confirm</Button>
             <Button onClick={this.rescheduleItemTransfer}>Re-schedule</Button>
-            <Button onClick={this.cancelItemTransfer}>Cancel</Button>
+            <Button onClick={this.cancelItemRequest}>Cancel</Button>
           </div>
         </div>
         <img
