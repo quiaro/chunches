@@ -9,6 +9,7 @@ import ErrorHandler from '../common/ErrorHandler';
 import { IMAGE_ENDPOINT } from '../common/constants';
 import { UPDATE_ITEM_TRANSFER } from '../mutations/item_transfer';
 import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
+import { ITEM_REQUESTS_CONFIRMED } from '../queries/item_request';
 
 const Styled = styled.div`
   display: flex;
@@ -51,7 +52,7 @@ class MessageItemRequestTransfer extends PureComponent {
     // to a different state than if the requester cancels the transfer.
     // The idea is to have another state for the requester to confirm
     // the cancellation.
-    variables.status = (isOwner) ? 'CANCEL' : 'CANCEL_COMPLETE';
+    variables.status = isOwner ? 'CANCEL' : 'CANCEL_COMPLETE';
 
     updateItemRequestStatus({ variables })
       .then(refetchItemRequestsTransfer)
@@ -78,7 +79,7 @@ class MessageItemRequestTransfer extends PureComponent {
         ownerApproved: true,
       },
     })
-      .then(() => refetchItemRequestsTransfer())
+      .then(refetchItemRequestsTransfer)
       .catch(e => ErrorHandler(e));
   }
 
@@ -139,6 +140,18 @@ class MessageItemRequestTransfer extends PureComponent {
 }
 
 export default compose(
-  graphql(UPDATE_ITEM_TRANSFER, { name: 'updateItemTransfer' }),
+  graphql(UPDATE_ITEM_TRANSFER, {
+    name: 'updateItemTransfer',
+    options: ({ user }) => ({
+      refetchQueries: [
+        {
+          query: ITEM_REQUESTS_CONFIRMED,
+          variables: {
+            uid: user.id,
+          },
+        },
+      ],
+    }),
+  }),
   graphql(UPDATE_ITEM_REQUEST_STATUS, { name: 'updateItemRequestStatus' }),
 )(MessageItemRequestTransfer);
