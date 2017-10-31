@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
 import Button from './styled/Button';
 import Dialog from './Dialog';
@@ -8,6 +8,7 @@ import { getLocaleAppointment } from '../common/utils';
 import ErrorHandler from '../common/ErrorHandler';
 import { IMAGE_ENDPOINT } from '../common/constants';
 import { UPDATE_ITEM_TRANSFER } from '../mutations/item_transfer';
+import { UPDATE_ITEM_REQUEST_STATUS } from '../mutations/item_request';
 
 const Styled = styled.div`
   display: flex;
@@ -36,8 +37,25 @@ class MessageItemRequestTransfer extends PureComponent {
   }
 
   cancelItemTransfer() {
-    // TODO
-    console.log('Cancel item transfer');
+    const {
+      itemRequest,
+      user,
+      refetchItemRequestsTransfer,
+      updateItemRequestStatus,
+    } = this.props;
+    const isOwner = user.id === itemRequest.owner.id;
+    let variables = {
+      id: itemRequest.id,
+    };
+    // If the owner cancels the transfer, the item request will move on
+    // to a different state than if the requester cancels the transfer.
+    // The idea is to have another state for the requester to confirm
+    // the cancellation.
+    variables.status = (isOwner) ? 'CANCEL' : 'CANCEL_COMPLETE';
+
+    updateItemRequestStatus({ variables })
+      .then(refetchItemRequestsTransfer)
+      .catch(e => ErrorHandler(e));
   }
 
   closeDialog() {
@@ -120,6 +138,7 @@ class MessageItemRequestTransfer extends PureComponent {
   }
 }
 
-export default graphql(UPDATE_ITEM_TRANSFER, {
-  name: 'updateItemTransfer',
-})(MessageItemRequestTransfer);
+export default compose(
+  graphql(UPDATE_ITEM_TRANSFER, { name: 'updateItemTransfer' }),
+  graphql(UPDATE_ITEM_REQUEST_STATUS, { name: 'updateItemRequestStatus' }),
+)(MessageItemRequestTransfer);

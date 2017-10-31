@@ -34,7 +34,7 @@ class MessageItemRequestAccepted extends PureComponent {
   }
 
   cancelItemRequest() {
-    this.updateStatus('CANCEL');
+    this.updateStatus('CANCEL_COMPLETE');
   }
 
   closeDialog() {

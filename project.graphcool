@@ -1,5 +1,5 @@
 # project: cj7gdhdwb02te01141lbxk8vo
-# version: 43
+# version: 45
 
 type File @model {
   contentType: String!
@@ -56,12 +56,13 @@ enum TradeRequestStatus {
 enum ItemRequestStatus {
   PENDING
   DENIED
-  DENIED_UNFULFILLED
+  DENIED_COMPLETE
   ACCEPTED
-  TRANSFER
-  TRANSFER_FULFILLED
-  TRANSFER_FULFILLED_BY_OWNER
   CANCEL
+  CANCEL_COMPLETE
+  TRANSFER
+  TRANSFER_COMPLETE
+  TRANSFER_COMPLETE_BY_OWNER
 }
 
 enum ItemStatus {

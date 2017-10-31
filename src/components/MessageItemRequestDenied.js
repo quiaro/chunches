@@ -30,7 +30,7 @@ class MessageItemRequestDenied extends PureComponent {
     updateItemRequestStatus({
       variables: {
         id: itemRequest.id,
-        status: 'DENIED_UNFULFILLED',
+        status: 'DENIED_COMPLETE',
       },
     })
       .then(() => refetch())

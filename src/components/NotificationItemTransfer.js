@@ -27,7 +27,7 @@ class NotificationItemTransfer extends PureComponent {
   }
 
   fulfillItemRequest() {
-    this.updateStatus('TRANSFER_FULFILLED');
+    this.updateStatus('TRANSFER_COMPLETE');
   }
 
   getItemTransferNotification(user, itemRequest) {
