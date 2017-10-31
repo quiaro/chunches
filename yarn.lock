@@ -2,6 +2,20 @@
 # yarn lockfile v1
 
 
+"@trendmicro/react-anchor@^0.5.5":
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/@trendmicro/react-anchor/-/react-anchor-0.5.6.tgz#fe13add34e6de15e9214e2e7268dab66fcfd637c"
+  dependencies:
+    prop-types "^15.5.10"
+
+"@trendmicro/react-toggle-switch@^0.5.6":
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/@trendmicro/react-toggle-switch/-/react-toggle-switch-0.5.6.tgz#acb0fab655f1dd3b073658651c4a3bca3b3c8ac3"
+  dependencies:
+    "@trendmicro/react-anchor" "^0.5.5"
+    classnames "^2.2.5"
+    prop-types "^15.5.8"
+
 "@types/graphql@0.10.2":
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-0.10.2.tgz#d7c79acbaa17453b6681c80c34b38fcb10c4c08c"

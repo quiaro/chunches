@@ -12,6 +12,7 @@ import Default from './routes/Default';
 import SideBar from './components/SideBar';
 import { ID_TOKEN_KEY } from './common/constants';
 import { theme } from './styles/theme';
+import '@trendmicro/react-toggle-switch/dist/react-toggle-switch.css';
 import './styles/base.css';
 
 const networkInterface = createNetworkInterface({
