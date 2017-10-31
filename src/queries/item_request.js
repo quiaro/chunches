@@ -86,6 +86,33 @@ export const ITEM_REQUESTS_DENIED = gql`
   }
 `;
 
+export const ITEM_REQUESTS_CANCELLED = gql`
+  query ItemRequestsCancelled($uid: ID!) {
+    allItemRequests(
+      filter: {
+        AND: [
+          { requester: { id: $uid } }
+          { status: CANCEL }
+        ]
+      }
+    ) {
+      id
+      owner {
+        id
+        name
+      }
+      item {
+        id
+        title
+        image {
+          secret
+        }
+      }
+      status
+    }
+  }
+`;
+
 export const ITEM_REQUESTS_TRANSFER = gql`
   query itemRequestsTransfer($uid: ID!) {
     allItemRequests(

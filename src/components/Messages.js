@@ -4,11 +4,13 @@ import styled from 'styled-components';
 import MessageItemRequestPending from './MessageItemRequestPending';
 import MessageItemRequestAccepted from './MessageItemRequestAccepted';
 import MessageItemRequestDenied from './MessageItemRequestDenied';
+import MessageItemRequestCancelled from './MessageItemRequestCancelled';
 import MessageItemRequestTransfer from './MessageItemRequestTransfer';
 import {
   ITEM_REQUESTS_PENDING,
   ITEM_REQUESTS_ACCEPTED,
   ITEM_REQUESTS_DENIED,
+  ITEM_REQUESTS_CANCELLED,
   ITEM_REQUESTS_TRANSFER,
 } from '../queries/item_request';
 
@@ -19,14 +21,17 @@ const Messages = props => {
     loadingItemRequestsPending,
     loadingItemRequestsAccepted,
     loadingItemRequestsDenied,
+    loadingItemRequestsCancelled,
     loadingItemRequestsTransfer,
     itemRequestsPending,
     itemRequestsAccepted,
     itemRequestsDenied,
+    itemRequestsCancelled,
     itemRequestsTransfer,
     refetchItemRequestsPending,
     refetchItemRequestsAccepted,
     refetchItemRequestsDenied,
+    refetchItemRequestsCancelled,
     refetchItemRequestsTransfer,
     user,
   } = props;
@@ -35,6 +40,7 @@ const Messages = props => {
     loadingItemRequestsPending ||
     loadingItemRequestsAccepted ||
     loadingItemRequestsDenied ||
+    loadingItemRequestsCancelled ||
     loadingItemRequestsTransfer
   )
     return null;
@@ -64,6 +70,14 @@ const Messages = props => {
     />,
   );
 
+  const cancelled = itemRequestsCancelled.map(itemRequest =>
+    <MessageItemRequestCancelled
+      key={itemRequest.id}
+      itemRequest={itemRequest}
+      refetch={refetchItemRequestsCancelled}
+    />,
+  );
+
   const transfer = itemRequestsTransfer.map(itemRequest =>
     <MessageItemRequestTransfer
       key={itemRequest.id}
@@ -74,7 +88,7 @@ const Messages = props => {
   );
 
   const defaultMessage = <p>There are no messages</p>;
-  const itemRequests = [].concat(pending, accepted, denied, transfer);
+  const itemRequests = [].concat(pending, accepted, denied, cancelled, transfer);
 
   return (
     <Styled>
@@ -118,6 +132,18 @@ export default compose(
       loadingItemRequestsDenied: loading,
       itemRequestsDenied: allItemRequests,
       refetchItemRequestsDenied: refetch,
+    }),
+  }),
+  graphql(ITEM_REQUESTS_CANCELLED, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+    props: ({ data: { loading, allItemRequests, refetch } }) => ({
+      loadingItemRequestsCancelled: loading,
+      itemRequestsCancelled: allItemRequests,
+      refetchItemRequestsCancelled: refetch,
     }),
   }),
   graphql(ITEM_REQUESTS_TRANSFER, {

@@ -6,6 +6,7 @@ import {
   ITEM_REQUESTS_PENDING,
   ITEM_REQUESTS_ACCEPTED,
   ITEM_REQUESTS_DENIED,
+  ITEM_REQUESTS_CANCELLED,
   ITEM_REQUESTS_TRANSFER,
 } from '../queries/item_request';
 
@@ -24,10 +25,12 @@ const NavBarMessages = (props) => {
     loadingItemRequestsPending,
     loadingItemRequestsAccepted,
     loadingItemRequestsDenied,
+    loadingItemRequestsCancelled,
     loadingItemRequestsTransfer,
     itemRequestsPending,
     itemRequestsAccepted,
     itemRequestsDenied,
+    itemRequestsCancelled,
     itemRequestsTransfer,
     className,
     onClick
@@ -37,6 +40,7 @@ const NavBarMessages = (props) => {
     loadingItemRequestsPending ||
     loadingItemRequestsAccepted ||
     loadingItemRequestsDenied ||
+    loadingItemRequestsCancelled ||
     loadingItemRequestsTransfer
   )
     return null;
@@ -45,6 +49,7 @@ const NavBarMessages = (props) => {
     itemRequestsPending,
     itemRequestsAccepted,
     itemRequestsDenied,
+    itemRequestsCancelled,
     itemRequestsTransfer,
   );
 
@@ -88,6 +93,17 @@ export default compose(
     props: ({ data: { loading, allItemRequests } }) => ({
       loadingItemRequestsDenied: loading,
       itemRequestsDenied: allItemRequests,
+    }),
+  }),
+  graphql(ITEM_REQUESTS_CANCELLED, {
+    options: ({ user }) => ({
+      variables: {
+        uid: user.id,
+      },
+    }),
+    props: ({ data: { loading, allItemRequests } }) => ({
+      loadingItemRequestsCancelled: loading,
+      itemRequestsCancelled: allItemRequests,
     }),
   }),
   graphql(ITEM_REQUESTS_TRANSFER, {
