@@ -23,7 +23,30 @@ const Styled = styled.div`
 class NotificationItemTransfer extends PureComponent {
   constructor(props) {
     super(props);
+    this.cancelItemRequest = this.cancelItemRequest.bind(this);
     this.fulfillItemRequest = this.fulfillItemRequest.bind(this);
+  }
+
+  cancelItemRequest() {
+    const {
+      itemRequest,
+      user,
+      refetchItemRequestsConfirmed,
+      updateItemRequestStatus,
+    } = this.props;
+    const isOwner = user.id === itemRequest.owner.id;
+    let variables = {
+      id: itemRequest.id,
+    };
+    // If the owner cancels the transfer, the item request will move on
+    // to a different state than if the requester cancels the transfer.
+    // The idea is to have another state for the requester to confirm
+    // the cancellation.
+    variables.status = isOwner ? 'CANCEL' : 'CANCEL_COMPLETE';
+
+    updateItemRequestStatus({ variables })
+      .then(refetchItemRequestsConfirmed)
+      .catch(e => ErrorHandler(e));
   }
 
   fulfillItemRequest() {
