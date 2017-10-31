@@ -36,25 +36,15 @@ class NotificationItemTransfer extends PureComponent {
   }
 
   cancelItemRequest() {
-    const {
-      itemRequest,
-      user,
-      refetchItemRequestsConfirmed,
-      updateItemRequestStatus,
-    } = this.props;
-    const isOwner = user.id === itemRequest.owner.id;
-    let variables = {
-      id: itemRequest.id,
-    };
+    const { itemRequest, user } = this.props;
+
     // If the owner cancels the transfer, the item request will move on
     // to a different state than if the requester cancels the transfer.
     // The idea is to have another state for the requester to confirm
     // the cancellation.
-    variables.status = isOwner ? 'CANCEL' : 'CANCEL_COMPLETE';
-
-    updateItemRequestStatus({ variables })
-      .then(refetchItemRequestsConfirmed)
-      .catch(e => ErrorHandler(e));
+    const isOwner = user.id === itemRequest.owner.id;
+    const status = isOwner ? 'CANCEL' : 'CANCEL_COMPLETE';
+    this.updateStatus(status);
   }
 
   closeDialog() {
@@ -62,7 +52,10 @@ class NotificationItemTransfer extends PureComponent {
   }
 
   fulfillItemRequest() {
-    this.updateStatus('TRANSFER_COMPLETE');
+    const { itemRequest, user } = this.props;
+    const isOwner = user.id === itemRequest.owner.id;
+    const status = isOwner ? 'TRANSFER_COMPLETE_BY_OWNER' : 'TRANSFER_COMPLETE';
+    this.updateStatus(status);
   }
 
   getItemTransferNotification(user, itemRequest) {

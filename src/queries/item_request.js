@@ -3,12 +3,7 @@ import { gql } from 'react-apollo';
 export const ITEM_REQUESTS_PENDING = gql`
   query ItemRequestsPending($uid: ID!) {
     allItemRequests(
-      filter: {
-        AND: [
-          { owner: { id: $uid } }
-          { status: PENDING }
-        ]
-      }
+      filter: { AND: [{ owner: { id: $uid } }, { status: PENDING }] }
     ) {
       id
       requester {
@@ -30,12 +25,7 @@ export const ITEM_REQUESTS_PENDING = gql`
 export const ITEM_REQUESTS_ACCEPTED = gql`
   query ItemRequestsAccepted($uid: ID!) {
     allItemRequests(
-      filter: {
-        AND: [
-          { requester: { id: $uid } }
-          { status: ACCEPTED }
-        ]
-      }
+      filter: { AND: [{ requester: { id: $uid } }, { status: ACCEPTED }] }
     ) {
       id
       owner {
@@ -66,12 +56,7 @@ export const ITEM_REQUESTS_ACCEPTED = gql`
 export const ITEM_REQUESTS_DENIED = gql`
   query ItemRequestsDenied($uid: ID!) {
     allItemRequests(
-      filter: {
-        AND: [
-          { requester: { id: $uid } }
-          { status: DENIED }
-        ]
-      }
+      filter: { AND: [{ requester: { id: $uid } }, { status: DENIED }] }
     ) {
       id
       item {
@@ -89,12 +74,7 @@ export const ITEM_REQUESTS_DENIED = gql`
 export const ITEM_REQUESTS_CANCELLED = gql`
   query ItemRequestsCancelled($uid: ID!) {
     allItemRequests(
-      filter: {
-        AND: [
-          { requester: { id: $uid } }
-          { status: CANCEL }
-        ]
-      }
+      filter: { AND: [{ requester: { id: $uid } }, { status: CANCEL }] }
     ) {
       id
       owner {
@@ -118,16 +98,20 @@ export const ITEM_REQUESTS_TRANSFER = gql`
     allItemRequests(
       filter: {
         OR: [
-          { AND: [
-            { status: TRANSFER }
-            { requester: { id: $uid } }
-            { transfer: { requesterApproved: false } }
-          ]}
-          { AND: [
-            { status: TRANSFER }
-            { owner: { id: $uid } }
-            { transfer: { ownerApproved: false } }
-          ]}
+          {
+            AND: [
+              { status: TRANSFER }
+              { requester: { id: $uid } }
+              { transfer: { requesterApproved: false } }
+            ]
+          }
+          {
+            AND: [
+              { status: TRANSFER }
+              { owner: { id: $uid } }
+              { transfer: { ownerApproved: false } }
+            ]
+          }
         ]
       }
     ) {
@@ -161,14 +145,15 @@ export const ITEM_REQUESTS_CONFIRMED = gql`
   query itemRequestsConfirmed($uid: ID!) {
     allItemRequests(
       filter: {
-        AND: [
-          { status: TRANSFER }
-          { transfer: { requesterApproved: true } }
-          { transfer: { ownerApproved: true } }
-          { OR: [
-            { requester: { id: $uid } }
-            { owner: { id: $uid } }
-          ]}
+        OR: [
+          {
+            AND: [
+              { status: TRANSFER }
+              { transfer: { requesterApproved: true } }
+              { transfer: { ownerApproved: true } }
+              { OR: [{ requester: { id: $uid } }, { owner: { id: $uid } }] }
+            ]
+          }
         ]
       }
     ) {
