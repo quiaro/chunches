@@ -1,8 +1,8 @@
 import { gql } from 'react-apollo';
 
 const CURRENT_USER = gql`
-  query {
-    user {
+  query CurrentUser($uid: ID!) {
+    User(id: $uid) {
       id
       name,
       email,

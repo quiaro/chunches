@@ -1,7 +1,8 @@
 export const ACCESS_TOKEN_KEY = 'access_token';
 export const ID_TOKEN_KEY = 'id_token';
 
-const GRAPHCOOL_ID = 'cj7gdhdwb02te01141lbxk8vo';
+const GRAPHCOOL_ID = 'cj9imhe602ca70130wkpc3v5z';
+export const SIMPLE_API_ENDPOINT = `https://api.graph.cool/simple/v1/${GRAPHCOOL_ID}`
 export const FILE_ENDPOINT = `https://api.graph.cool/file/v1/${GRAPHCOOL_ID}`
 export const IMAGE_ENDPOINT = `https://images.graph.cool/v1/${GRAPHCOOL_ID}`
 

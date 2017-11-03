@@ -10,12 +10,12 @@ import {
 import routes from './routes';
 import Default from './routes/Default';
 import SideBar from './components/SideBar';
-import { ID_TOKEN_KEY } from './common/constants';
+import { ID_TOKEN_KEY, SIMPLE_API_ENDPOINT } from './common/constants';
 import { theme } from './styles/theme';
 import './styles/base.css';
 
 const networkInterface = createNetworkInterface({
-  uri: 'https://api.graph.cool/simple/v1/cj7gdhdwb02te01141lbxk8vo',
+  uri: SIMPLE_API_ENDPOINT,
 });
 
 networkInterface.use([

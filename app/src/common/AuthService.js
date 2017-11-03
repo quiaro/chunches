@@ -5,12 +5,12 @@ import { ID_TOKEN_KEY, ACCESS_TOKEN_KEY } from './constants'
 const CLIENT_ID = 'nPHTZW3yqOpIZ2TWKG6rAyNGqH91Vunq';
 const CLIENT_DOMAIN = 'quiros.auth0.com';
 const REDIRECT = 'http://localhost:3000/callback';
-const SCOPE = 'openid email profile';
-const AUDIENCE = 'https://quiros.auth0.com/userinfo';
+const SCOPE = 'openid email';
+const AUDIENCE = 'https://quiros.auth0.com/api/v2/';
 
 var auth = new auth0.WebAuth({
-  clientID: CLIENT_ID,
-  domain: CLIENT_DOMAIN
+  domain: CLIENT_DOMAIN,
+  clientID: CLIENT_ID
 });
 
 export function login() {

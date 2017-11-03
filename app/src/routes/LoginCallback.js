@@ -5,9 +5,7 @@ import { gql, graphql, compose } from 'react-apollo';
 import {
   getAndStoreUserHashParameters,
   isLoggedIn,
-  getIdToken,
-  getEmail,
-  getName,
+  getAccessToken,
 } from '../common/AuthService';
 import ErrorHandler from '../common/ErrorHandler';
 import CURRENT_USER from '../queries/user';
@@ -22,7 +20,7 @@ class Callback extends Component {
 
   async componentDidMount() {
     await getAndStoreUserHashParameters();
-    this.setState({ isLoggedIn: isLoggedIn() })
+    this.setState({ isLoggedIn: isLoggedIn() });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -35,9 +33,7 @@ class Callback extends Component {
 
   createUser = () => {
     const variables = {
-      idToken: getIdToken(),
-      email: getEmail(),
-      name: getName(),
+      accessToken: getAccessToken(),
     };
 
     this.props
@@ -63,13 +59,10 @@ class Callback extends Component {
 }
 
 const CREATE_USER_MUTATION = gql`
-  mutation($idToken: String!, $name: String!, $email: String!) {
-    createUser(
-      authProvider: { auth0: { idToken: $idToken } }
-      name: $name
-      email: $email
-    ) {
+  mutation($accessToken: String!) {
+    authenticateUser(accessToken: $accessToken) {
       id
+      token
     }
   }
 `;

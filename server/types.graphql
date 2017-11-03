@@ -1,6 +1,3 @@
-# project: cj7gdhdwb02te01141lbxk8vo
-# version: 45
-
 type File @model {
   contentType: String!
   createdAt: DateTime!
@@ -15,11 +12,11 @@ type File @model {
 
 type User @model {
   createdAt: DateTime!
-  email: String @isUnique
+  email: String
   id: ID! @isUnique
   invites: [Invite!]! @relation(name: "UserInvites")
   pursuer: [TradeRequest!]! @relation(name: "UserPursuing")
-  name: String!
+  name: String
   password: String
   updatedAt: DateTime!
   items: [Item!]! @relation(name: "UserItems")
