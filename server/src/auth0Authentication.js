@@ -112,7 +112,6 @@ export default async event => {
 
     return { data: { id: graphCoolUser.id, token } };
   } catch (err) {
-    console.log(err);
-    return { error: 'An unexpected error occured' };
+    return { error: 'An unexpected error occured: ' + error };
   }
 };

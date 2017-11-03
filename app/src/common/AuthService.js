@@ -1,6 +1,4 @@
-import decode from 'jwt-decode';
 import auth0 from 'auth0-js';
-import { ID_TOKEN_KEY, ACCESS_TOKEN_KEY } from './constants'
 
 const CLIENT_ID = 'nPHTZW3yqOpIZ2TWKG6rAyNGqH91Vunq';
 const CLIENT_DOMAIN = 'quiros.auth0.com';
@@ -8,77 +6,61 @@ const REDIRECT = 'http://localhost:3000/callback';
 const SCOPE = 'openid email';
 const AUDIENCE = 'https://quiros.auth0.com/api/v2/';
 
-var auth = new auth0.WebAuth({
+const auth = new auth0.WebAuth({
   domain: CLIENT_DOMAIN,
-  clientID: CLIENT_ID
+  clientID: CLIENT_ID,
 });
+
+const USER_ID_KEY = 'user_id';
+const USER_TOKEN_KEY = 'user_token';
 
 export function login() {
   auth.authorize({
-    responseType: 'token id_token',
+    responseType: 'token',
     redirectUri: REDIRECT,
     audience: AUDIENCE,
-    scope: SCOPE
+    scope: SCOPE,
   });
 }
 
 export function logout(history) {
-  clearIdToken();
-  clearAccessToken();
+  clearUserSession();
   history.push('/');
 }
 
-export function requireAuth(nextState, replace) {
-  if (!isLoggedIn()) {
-    replace({ pathname: '/' });
-  }
+export function clearUserSession() {
+  localStorage.removeItem(USER_ID_KEY);
+  localStorage.removeItem(USER_TOKEN_KEY);
 }
 
-export function getIdToken() { return localStorage.getItem(ID_TOKEN_KEY); }
-export function getAccessToken() { return localStorage.getItem(ACCESS_TOKEN_KEY); }
-
-function clearIdToken() { localStorage.removeItem(ID_TOKEN_KEY); }
-function clearAccessToken() { localStorage.removeItem(ACCESS_TOKEN_KEY); }
-
-function setIdToken(idToken) { localStorage.setItem(ID_TOKEN_KEY, idToken); }
-function setAccessToken(accessToken) { localStorage.setItem(ACCESS_TOKEN_KEY, accessToken); }
-
-// Helper function that will allow us to extract the access token and the id_token
-export function getAndStoreUserHashParameters() {
-  return new Promise((resolve, reject) => {
-    auth.parseHash(window.location.hash, function(err, authResult) {
-      if (err) reject(err);
-
-      setIdToken(authResult.idToken);
-      setAccessToken(authResult.accessToken);
-      resolve(authResult);
-    });
-  });
+export function getUserSession() {
+  return {
+    id: localStorage.getItem(USER_ID_KEY),
+    token: localStorage.getItem(USER_TOKEN_KEY),
+  };
 }
 
-export function getProfile() {
-  const profile = decode(getIdToken());
-  return profile;
-}
-export function getEmail() { return getProfile().email; }
-export function getName() { return getProfile().nickname; }
-
-function getTokenExpirationDate(encodedToken) {
-  const token = decode(encodedToken);
-  if (!token.exp) { return null; }
-
-  const date = new Date(0);
-  date.setUTCSeconds(token.exp);
-
-  return date;
+// Convenience method since the user id is required frequently for queries
+export function getUserId() {
+  return localStorage.getItem(USER_ID_KEY);
 }
 
-function isTokenExpired(token) {
-  const expirationDate = getTokenExpirationDate(token);
-  return expirationDate < new Date();
+export function setUserSession(userId, userToken) {
+  localStorage.setItem(USER_ID_KEY, userId);
+  localStorage.setItem(USER_TOKEN_KEY, userToken);
 }
 
 export function isLoggedIn() {
-  const idToken = getIdToken();
-  return !!idToken && !isTokenExpired(idToken);
+  const { id, token } = getUserSession();
+  return id && token;
+}
+
+// Helper function that parses and saves Auth0's access token
+export function getAccessToken() {
+  return new Promise((resolve, reject) => {
+    auth.parseHash(window.location.hash, function(err, authResult) {
+      if (err) reject(err);
+      resolve(authResult.accessToken);
+    });
+  });
 }

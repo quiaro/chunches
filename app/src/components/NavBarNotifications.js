@@ -2,6 +2,7 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import styled from 'styled-components';
 import Badge from './Badge';
+import { getUserId } from '../common/AuthService';
 import { ITEM_REQUESTS_CONFIRMED } from '../queries/item_request';
 
 const Styled = styled.button`
@@ -32,9 +33,9 @@ const NavBarNotifications = props => {
 };
 
 export default graphql(ITEM_REQUESTS_CONFIRMED, {
-  options: ({ user }) => ({
+  options: () => ({
     variables: {
-      uid: user.id,
+      uid: getUserId(),
     },
   }),
   props: ({ data: { loading, allItemRequests } }) => ({

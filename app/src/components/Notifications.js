@@ -2,6 +2,7 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import styled from 'styled-components';
 import NotificationItemTransfer from './NotificationItemTransfer';
+import { getUserId } from '../common/AuthService';
 import { ITEM_REQUESTS_CONFIRMED } from '../queries/item_request';
 
 const Styled = styled.div`margin: 30px;`;
@@ -35,9 +36,9 @@ const Notifications = props => {
 };
 
 export default graphql(ITEM_REQUESTS_CONFIRMED, {
-  options: ({ user }) => ({
+  options: () => ({
     variables: {
-      uid: user.id,
+      uid: getUserId(),
     },
   }),
   props: ({ data: { loading, allItemRequests, refetch } }) => ({

@@ -42,8 +42,6 @@ class TradeRequestForm extends Component {
 
     this.props.createTradeRequest({ variables })
       .then(result => {
-        console.log('Trade request sent: ', result.data);
-
         this.setState({
           userName: '',
           userList: [],

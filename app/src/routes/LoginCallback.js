@@ -3,62 +3,52 @@ import { withRouter } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { gql, graphql, compose } from 'react-apollo';
 import {
-  getAndStoreUserHashParameters,
-  isLoggedIn,
   getAccessToken,
+  setUserSession,
+  isLoggedIn,
 } from '../common/AuthService';
 import ErrorHandler from '../common/ErrorHandler';
-import CURRENT_USER from '../queries/user';
 
 class Callback extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true, // Load data to verify if user is logged in or not
       isLoggedIn: false,
     };
   }
 
-  async componentDidMount() {
-    await getAndStoreUserHashParameters();
-    this.setState({ isLoggedIn: isLoggedIn() });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { data } = nextProps;
-
-    if (!data.loading && !data.user) {
-      this.createUser();
-    }
-  }
-
-  createUser = () => {
-    const variables = {
-      accessToken: getAccessToken(),
-    };
-
-    this.props
-      .createUser({ variables })
-      .then(response => {
-        console.log('Response from create user', response);
+  componentWillMount() {
+    getAccessToken()
+      .then(accessToken => {
+        this.props
+          .authenticateUser({
+            variables: {
+              accessToken,
+            },
+          })
+          .then(response => {
+            const { id, token } = response.data.authenticateUser;
+            setUserSession(id, token);
+            this.setState({
+              loading: false,
+              isLoggedIn: isLoggedIn(),
+            });
+          });
       })
       .catch(e => ErrorHandler(e));
-  };
+  }
 
   render() {
-    const { isLoggedIn } = this.state;
-    const { data: { user } } = this.props;
+    const { loading, isLoggedIn } = this.state;
 
-    if (isLoggedIn && user) {
-      // Wait to redirect user to app until the user hash values from the auth
-      // service have been stored in local cache and the user information has
-      // been retrieved from the database
-      return <Redirect to="/home" />;
-    }
-    return <div>Loading</div>;
+    if (loading) return <div>Loading</div>;
+    if (isLoggedIn) return <Redirect to="/home" />;
+    return <Redirect to="/" />;
   }
 }
 
-const CREATE_USER_MUTATION = gql`
+const AUTHENTICATE_USER = gql`
   mutation($accessToken: String!) {
     authenticateUser(accessToken: $accessToken) {
       id
@@ -68,16 +58,6 @@ const CREATE_USER_MUTATION = gql`
 `;
 
 export default compose(
-  graphql(CURRENT_USER, { options: { fetchPolicy: 'network-only' } }),
-  graphql(CREATE_USER_MUTATION, {
-    name: 'createUser',
-    options: props => ({
-      refetchQueries: [
-        {
-          query: CURRENT_USER,
-        },
-      ],
-    }),
-  }),
+  graphql(AUTHENTICATE_USER, { name: 'authenticateUser' }),
   withRouter,
 )(Callback);

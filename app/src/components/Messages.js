@@ -6,6 +6,7 @@ import MessageItemRequestAccepted from './MessageItemRequestAccepted';
 import MessageItemRequestDenied from './MessageItemRequestDenied';
 import MessageItemRequestCancelled from './MessageItemRequestCancelled';
 import MessageItemRequestTransfer from './MessageItemRequestTransfer';
+import { getUserId } from '../common/AuthService';
 import {
   ITEM_REQUESTS_PENDING,
   ITEM_REQUESTS_ACCEPTED,
@@ -99,9 +100,9 @@ const Messages = props => {
 
 export default compose(
   graphql(ITEM_REQUESTS_PENDING, {
-    options: ({ user }) => ({
+    options: () => ({
       variables: {
-        uid: user.id,
+        uid: getUserId(),
       },
     }),
     props: ({ data: { loading, allItemRequests, refetch } }) => ({
@@ -111,9 +112,9 @@ export default compose(
     }),
   }),
   graphql(ITEM_REQUESTS_ACCEPTED, {
-    options: ({ user }) => ({
+    options: () => ({
       variables: {
-        uid: user.id,
+        uid: getUserId(),
       },
     }),
     props: ({ data: { loading, allItemRequests, refetch } }) => ({
@@ -123,9 +124,9 @@ export default compose(
     }),
   }),
   graphql(ITEM_REQUESTS_DENIED, {
-    options: ({ user }) => ({
+    options: () => ({
       variables: {
-        uid: user.id,
+        uid: getUserId(),
       },
     }),
     props: ({ data: { loading, allItemRequests, refetch } }) => ({
@@ -135,9 +136,9 @@ export default compose(
     }),
   }),
   graphql(ITEM_REQUESTS_CANCELLED, {
-    options: ({ user }) => ({
+    options: () => ({
       variables: {
-        uid: user.id,
+        uid: getUserId(),
       },
     }),
     props: ({ data: { loading, allItemRequests, refetch } }) => ({
@@ -147,9 +148,9 @@ export default compose(
     }),
   }),
   graphql(ITEM_REQUESTS_TRANSFER, {
-    options: ({ user }) => ({
+    options: () => ({
       variables: {
-        uid: user.id,
+        uid: getUserId(),
       },
     }),
     props: ({ data: { loading, allItemRequests, refetch } }) => ({

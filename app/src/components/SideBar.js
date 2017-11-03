@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { graphql, compose } from 'react-apollo';
 import classNames from 'classnames';
 import styled from 'styled-components';
 import Notifications from './Notifications';
 import Messages from './Messages';
 import Profile from './Profile';
-import CURRENT_USER from '../queries/user';
-import { VIEW_MESSAGES, VIEW_NOTIFICATIONS, VIEW_PROFILE } from '../common/constants';
+import {
+  VIEW_MESSAGES,
+  VIEW_NOTIFICATIONS,
+  VIEW_PROFILE,
+} from '../common/constants';
 
 const Styled = styled.div`
   position: absolute;
@@ -16,7 +18,7 @@ const Styled = styled.div`
   height: calc(100vh - ${props => props.theme.nav_height});
   background-color: ${props => props.theme.sidebar_background};
   width: ${props => props.theme.sidebar_width};
-  transition: right .3s ease-in;
+  transition: right 0.3s ease-in;
 
   &.hidden {
     right: -${props => props.theme.sidebar_width};
@@ -63,24 +65,19 @@ class SideBar extends Component {
 
   render() {
     const { view } = this.state;
-    const { loading, user } = this.props.data;
-    const classes = classNames(this.props.className, {
-      hidden: !this.state.isVisible
+    const { className, user } = this.props;
+    const classes = classNames(className, {
+      hidden: !this.state.isVisible,
     });
 
-    if (loading) return null;
-
-    return  (
+    return (
       <Styled className={classes}>
-        { (view === VIEW_NOTIFICATIONS) && <Notifications user={user} /> }
-        { (view === VIEW_MESSAGES) && <Messages user={user} /> }
-        { (view === VIEW_PROFILE) && <Profile user={user} /> }
+        {view === VIEW_NOTIFICATIONS && <Notifications user={user} />}
+        {view === VIEW_MESSAGES && <Messages user={user} />}
+        {view === VIEW_PROFILE && <Profile user={user} />}
       </Styled>
     );
   }
 }
 
-export default compose(
-  graphql(CURRENT_USER),
-  withRouter
-)(SideBar);
+export default withRouter(SideBar);

@@ -2,6 +2,7 @@ import React from 'react';
 import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
 import Badge from './Badge';
+import { getUserId } from '../common/AuthService';
 import {
   ITEM_REQUESTS_PENDING,
   ITEM_REQUESTS_ACCEPTED,
@@ -63,9 +64,9 @@ const NavBarMessages = (props) => {
 
 export default compose(
   graphql(ITEM_REQUESTS_PENDING, {
-    options: ({ user }) => ({
+    options: () => ({
       variables: {
-        uid: user.id,
+        uid: getUserId(),
       },
     }),
     props: ({ data: { loading, allItemRequests } }) => ({
@@ -74,9 +75,9 @@ export default compose(
     }),
   }),
   graphql(ITEM_REQUESTS_ACCEPTED, {
-    options: ({ user }) => ({
+    options: () => ({
       variables: {
-        uid: user.id,
+        uid: getUserId(),
       },
     }),
     props: ({ data: { loading, allItemRequests } }) => ({
@@ -85,9 +86,9 @@ export default compose(
     }),
   }),
   graphql(ITEM_REQUESTS_DENIED, {
-    options: ({ user }) => ({
+    options: () => ({
       variables: {
-        uid: user.id,
+        uid: getUserId(),
       },
     }),
     props: ({ data: { loading, allItemRequests } }) => ({
@@ -96,9 +97,9 @@ export default compose(
     }),
   }),
   graphql(ITEM_REQUESTS_CANCELLED, {
-    options: ({ user }) => ({
+    options: () => ({
       variables: {
-        uid: user.id,
+        uid: getUserId(),
       },
     }),
     props: ({ data: { loading, allItemRequests } }) => ({
@@ -107,9 +108,9 @@ export default compose(
     }),
   }),
   graphql(ITEM_REQUESTS_TRANSFER, {
-    options: ({ user }) => ({
+    options: () => ({
       variables: {
-        uid: user.id,
+        uid: getUserId(),
       },
     }),
     props: ({ data: { loading, allItemRequests } }) => ({

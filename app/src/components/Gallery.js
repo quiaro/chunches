@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { gql, graphql, compose, withApollo } from 'react-apollo';
 import GalleryGrid from './styled/GalleryGrid';
 import GalleryItem from './GalleryItem';
+import { getUserId } from '../common/AuthService';
 import ErrorHandler from '../common/ErrorHandler';
 
 class Gallery extends Component {
@@ -137,9 +138,9 @@ const ALL_NETWORK_ITEMS_QUERY = gql`
 
 export default compose(
   graphql(ALL_ACCEPTED_TRADE_REQUESTS_QUERY, {
-    options: ({ user }) => ({
+    options: () => ({
       variables: {
-        uid: user.id,
+        uid: getUserId(),
       },
     }),
   }),
