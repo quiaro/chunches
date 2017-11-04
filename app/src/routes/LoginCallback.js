@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { gql, graphql, compose } from 'react-apollo';
 import {
@@ -57,7 +56,6 @@ const AUTHENTICATE_USER = gql`
   }
 `;
 
-export default compose(
-  graphql(AUTHENTICATE_USER, { name: 'authenticateUser' }),
-  withRouter,
-)(Callback);
+export default graphql(AUTHENTICATE_USER, { name: 'authenticateUser' })(
+  Callback,
+);
