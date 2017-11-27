@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "license": "MIT",
   "devDependencies": {
+    "flow-bin": "^0.59.0",
     "react-scripts": "1.0.11"
   },
   "dependencies": {
@@ -11,7 +12,7 @@
     "moment": "^2.19.1",
     "react": "^16.0.0",
     "react-addons-shallow-compare": "^15.6.2",
-    "react-apollo": "^1.4.15",
+    "react-apollo": "^2.0.1",
     "react-dates": "^13.0.6",
     "react-dom": "^16.0.0",
     "react-dropzone": "^4.1.2",
@@ -22,6 +23,7 @@
     "styled-components": "^2.1.2"
   },
   "scripts": {
+    "flow": "flow",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
