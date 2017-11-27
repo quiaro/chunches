@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { gql, graphql, compose } from 'react-apollo';
+import { gql, graphql } from 'react-apollo';
 import {
-  getAccessToken,
+  getIDToken,
   setUserSession,
   isLoggedIn,
 } from '../common/AuthService';
@@ -18,12 +18,12 @@ class Callback extends Component {
   }
 
   componentWillMount() {
-    getAccessToken()
-      .then(accessToken => {
+    getIDToken()
+      .then(idToken => {
         this.props
           .authenticateUser({
             variables: {
-              accessToken,
+              idToken,
             },
           })
           .then(response => {
@@ -48,8 +48,8 @@ class Callback extends Component {
 }
 
 const AUTHENTICATE_USER = gql`
-  mutation($accessToken: String!) {
-    authenticateUser(accessToken: $accessToken) {
+  mutation authenticateUser($idToken: String!) {
+    authenticateUser(idToken: $idToken) {
       id
       token
     }

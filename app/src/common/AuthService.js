@@ -1,10 +1,9 @@
 import auth0 from 'auth0-js';
 
-const CLIENT_ID = 'nPHTZW3yqOpIZ2TWKG6rAyNGqH91Vunq';
 const CLIENT_DOMAIN = 'quiros.auth0.com';
+const CLIENT_ID = 'nPHTZW3yqOpIZ2TWKG6rAyNGqH91Vunq';
 const REDIRECT = 'http://localhost:3000/callback';
 const SCOPE = 'openid email';
-const AUDIENCE = 'https://quiros.auth0.com/api/v2/';
 
 const auth = new auth0.WebAuth({
   domain: CLIENT_DOMAIN,
@@ -16,9 +15,8 @@ const USER_TOKEN_KEY = 'user_token';
 
 export function login() {
   auth.authorize({
-    responseType: 'token',
+    responseType: 'id_token',
     redirectUri: REDIRECT,
-    audience: AUDIENCE,
     scope: SCOPE,
   });
 }
@@ -55,12 +53,12 @@ export function isLoggedIn() {
   return id && token;
 }
 
-// Helper function that parses and saves Auth0's access token
-export function getAccessToken() {
+// Helper function that parses and saves Auth0's id token
+export function getIDToken() {
   return new Promise((resolve, reject) => {
     auth.parseHash(window.location.hash, function(err, authResult) {
       if (err) reject(err);
-      resolve(authResult.accessToken);
+      resolve(authResult.idToken);
     });
   });
 }
